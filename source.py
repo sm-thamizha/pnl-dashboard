@@ -298,7 +298,8 @@ if not os.path.isdir('.git'):
     print("Not initiated")
 
 # Set the remote repository URL (you can replace it with your GitHub repository URL)
-remote_repo_url = "https://github.com/sm-thamizha/pnl-dashboard-trial"
+subprocess.run(['git', 'remote', 'set-url', 'origin', 'https://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@github.com/sm-thamizha/pnl-dashboard-trial.git'], check=True)
+
 subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
 subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
 
@@ -311,10 +312,10 @@ except subprocess.CalledProcessError:
     pass
 
 # Add the changed files to the staging area (make sure to replace 'index.html' with the correct file)
-subprocess.run(["git", "add", "index.html"])
+subprocess.run(["git", "add", "index.html"],check=True)
 
 # Commit the changes with a message
-subprocess.run(["git", "commit", "-m", "Update portfolio dashboard with the latest graph"])
+subprocess.run(["git", "commit", "-m", "Update portfolio dashboard with the latest graph"],check=True)
 
 # Push the changes to the remote repository
-subprocess.run(["git", "push", "origin", "main"])
+subprocess.run(["git", "push", "origin", "main"],check=True)
