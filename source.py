@@ -288,3 +288,31 @@ html_template = f"""
 # Write the full HTML to index.html
 with open("index.html", "w") as f:
     f.write(html_template)
+
+
+import subprocess
+
+# Check if the current directory is already a Git repository
+if not os.path.isdir('.git'):
+    subprocess.run(["git", "init"])  # Initialize the repository if not already initialized
+    print("Not initiated")
+
+# Set the remote repository URL (you can replace it with your GitHub repository URL)
+remote_repo_url = "https://github.com/your-username/your-repo.git"
+
+# Add the remote repository if not already added
+try:
+    subprocess.run(["git", "remote", "add", "origin", remote_repo_url], check=True)
+except subprocess.CalledProcessError:
+    # If remote origin already exists, we catch the error and ignore it
+    print("Origin already exists")
+    pass
+
+# Add the changed files to the staging area (make sure to replace 'index.html' with the correct file)
+subprocess.run(["git", "add", "index.html"])
+
+# Commit the changes with a message
+subprocess.run(["git", "commit", "-m", "Update portfolio dashboard with the latest graph"])
+
+# Push the changes to the remote repository
+subprocess.run(["git", "push", "origin", "main"])
