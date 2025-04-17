@@ -305,5 +305,6 @@ subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], che
 
 # Then push
 subprocess.run(['git', 'add', 'index.html'], check=True)
+subprocess.run(['git', 'status'], check=True)
 subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
 subprocess.run(['git', 'push', 'origin', 'main'], check=True)
