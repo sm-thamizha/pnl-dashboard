@@ -292,19 +292,32 @@ with open("index.html", "w") as f:
 
 import subprocess
 
-# Replace with your actual PAT
-token = "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"
-repo_url = f"https://{token}@github.com/sm-thamizha/pnl-dashboard-trial.git"
+# SSH URL for your repository
+repo_url = "git@github.com:sm-thamizha/pnl-dashboard-trial.git"
+
+# Ensure remote URL is set correctly for 'origin' using SSH
 subprocess.run(['git', 'remote', 'set-url', 'origin', repo_url], check=True)
+
+# Verify remote URL configuration
 subprocess.run(['git', 'remote', '-v'], check=True)
+
+# Checkout the 'main' branch (if not on 'main' already)
 subprocess.run(['git', 'checkout', '-B', 'main'], check=True)
 
-# Optional: Set user identity for commit (still recommended even with PAT)
+# Set user identity for commits (optional, but recommended even with SSH)
 subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
 subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
 
-# Then push
+# Add index.html to staging (ensure the file is tracked)
 subprocess.run(['git', 'add', 'index.html'], check=True)
+
+# Check status to ensure the file is added
 subprocess.run(['git', 'status'], check=True)
+
+# Commit the changes with a meaningful message
 subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
-subprocess.run(['git', 'push', repo_url, 'main'], check=True)
+
+# Push the changes to the 'main' branch using SSH
+subprocess.run(['git', 'push', 'origin', 'main'], check=True)
+
+print("Changes successfully pushed to GitHub using SSH!")
