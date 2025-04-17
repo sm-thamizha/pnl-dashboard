@@ -295,7 +295,8 @@ import subprocess
 # Replace with your actual PAT
 token = "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"
 repo_url = f"https://{token}@github.com/sm-thamizha/pnl-dashboard-trial.git"
-
+subprocess.run(['git', 'remote', 'set-url', 'origin', repo_url], check=True)
+subprocess.run(['git', 'remote', '-v'], check=True)
 subprocess.run(['git', 'checkout', '-B', 'main'], check=True)
 
 # Optional: Set user identity for commit (still recommended even with PAT)
