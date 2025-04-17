@@ -296,7 +296,12 @@ import subprocess
 repo_url = "git@github.com:sm-thamizha/pnl-dashboard-trial.git"
 
 # Ensure remote URL is set correctly for 'origin' using SSH
-subprocess.run(['git', 'remote', 'set-url', 'origin', repo_url], check=True)
+try:
+    subprocess.run(['git', 'remote', 'get-url', 'origin'], check=True)
+    print("Remote 'origin' exists.")
+except subprocess.CalledProcessError:
+    print("Remote 'origin' does not exist. Adding 'origin'.")
+    subprocess.run(['git', 'remote', 'add', 'origin', repo_url], check=True)
 
 # Verify remote URL configuration
 subprocess.run(['git', 'remote', '-v'], check=True)
