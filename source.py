@@ -292,30 +292,18 @@ with open("index.html", "w") as f:
 
 import subprocess
 
-# Check if the current directory is already a Git repository
-if not os.path.isdir('.git'):
-    subprocess.run(["git", "init"])  # Initialize the repository if not already initialized
-    print("Not initiated")
+# Replace with your actual PAT
+token = "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"
+repo_url = f"https://{token}@github.com/sm-thamizha/pnl-dashboard-trial.git"
 
-# Set the remote repository URL (you can replace it with your GitHub repository URL)
-subprocess.run(['git', 'remote', 'set-url', 'origin', 'https://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@github.com/sm-thamizha/pnl-dashboard-trial.git'], check=True)
+# Add remote origin if it doesn't exist
+subprocess.run(['git', 'remote', 'add', 'origin', repo_url], check=True)
 
+# Optional: Set user identity for commit (still recommended even with PAT)
 subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
 subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
 
-# Add the remote repository if not already added
-try:
-    subprocess.run(["git", "remote", "add", "origin", remote_repo_url], check=True)
-except subprocess.CalledProcessError:
-    # If remote origin already exists, we catch the error and ignore it
-    print("Origin already exists")
-    pass
-
-# Add the changed files to the staging area (make sure to replace 'index.html' with the correct file)
-subprocess.run(["git", "add", "index.html"],check=True)
-
-# Commit the changes with a message
-subprocess.run(["git", "commit", "-m", "Update portfolio dashboard with the latest graph"],check=True)
-
-# Push the changes to the remote repository
-subprocess.run(["git", "push", "origin", "main"],check=True)
+# Then push
+subprocess.run(['git', 'add', 'index.html'], check=True)
+subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
+subprocess.run(['git', 'push', 'origin', 'main'], check=True)
