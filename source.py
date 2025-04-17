@@ -14,8 +14,8 @@ access_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiw
 fyers = fyersModel.FyersModel(token=access_token, is_async=False, client_id=client_id, log_path="")
 
 start_date = None
-pnl_file = "holdings_pnl_tracker.csv"
-holdings_df = pd.read_csv("holdings.csv", dayfirst=True)
+pnl_file = "/opt/render/project/src/holdings_pnl_tracker.csv"
+holdings_df = pd.read_csv("/opt/render/project/src/holdings.csv", dayfirst=True)
 holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True)
 
 holdings_dict = holdings_df.groupby('Symbol').apply(
