@@ -299,6 +299,8 @@ if not os.path.isdir('.git'):
 
 # Set the remote repository URL (you can replace it with your GitHub repository URL)
 remote_repo_url = "https://github.com/sm-thamizha/pnl-dashboard-trial"
+subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
+subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
 
 # Add the remote repository if not already added
 try:
