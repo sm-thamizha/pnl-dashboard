@@ -91,7 +91,7 @@ while current_date <= end_date:
                     "PnL": round(pnl, 2)
                 })
     current_date += timedelta(days=1)
-
+print("Namma jeichitom Maara!!!")
 if daily_rows:
     df = pd.DataFrame(daily_rows)
     df.sort_values(by=["Date", "Symbol"], inplace=True)
