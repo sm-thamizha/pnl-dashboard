@@ -303,7 +303,7 @@ subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
 subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
 
 # Then push
-#subprocess.run(['git', 'add', 'index.html'], check=True)
-#subprocess.run(['git', 'status'], check=True)
-#subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
-#subprocess.run(['git', 'push', repo_url, 'main'], check=True)
+subprocess.run(['git', 'add', 'index.html'], check=True)
+subprocess.run(['git', 'status'], check=True)
+subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
+subprocess.run(['git', 'push', repo_url, 'main'], check=True)
