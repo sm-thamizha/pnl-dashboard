@@ -298,9 +298,6 @@ repo_url = f"https://{token}@github.com/sm-thamizha/pnl-dashboard-trial.git"
 
 subprocess.run(['git', 'checkout', '-B', 'main'], check=True)
 
-# Add remote origin if it doesn't exist
-subprocess.run(['git', 'remote', 'add', 'origin', repo_url], check=True)
-
 # Optional: Set user identity for commit (still recommended even with PAT)
 subprocess.run(['git', 'config', 'user.name', 'SM Thamizha'], check=True)
 subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], check=True)
@@ -309,4 +306,4 @@ subprocess.run(['git', 'config', 'user.email', 'psakthimurugan1@gmail.com'], che
 #subprocess.run(['git', 'add', 'index.html'], check=True)
 #subprocess.run(['git', 'status'], check=True)
 #subprocess.run(['git', 'commit', '-m', 'Update portfolio dashboard with the latest graph'], check=True)
-subprocess.run(['git', 'push', 'origin', 'main'], check=True)
+#subprocess.run(['git', 'push', repo_url, 'main'], check=True)
