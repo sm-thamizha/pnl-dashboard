@@ -298,7 +298,7 @@ if not os.path.isdir('.git'):
     print("Not initiated")
 
 # Set the remote repository URL (you can replace it with your GitHub repository URL)
-remote_repo_url = "https://github.com/your-username/your-repo.git"
+remote_repo_url = "https://github.com/sm-thamizha/pnl-dashboard-trial"
 
 # Add the remote repository if not already added
 try:
