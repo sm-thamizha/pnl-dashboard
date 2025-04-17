@@ -14,8 +14,8 @@ access_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiw
 fyers = fyersModel.FyersModel(token=access_token, is_async=False, client_id=client_id, log_path="")
 
 start_date = None
-pnl_file = "/opt/render/project/src/holdings_pnl_tracker.csv"
-holdings_df = pd.read_csv("/opt/render/project/src/holdings.csv", dayfirst=True)
+pnl_file = "holdings_pnl_tracker.csv"
+holdings_df = pd.read_csv("holdings.csv", dayfirst=True)
 holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True)
 
 holdings_dict = holdings_df.groupby('Symbol').apply(
@@ -91,9 +91,200 @@ while current_date <= end_date:
                     "PnL": round(pnl, 2)
                 })
     current_date += timedelta(days=1)
-print("Namma jeichitom Maara!!!")
+
 if daily_rows:
     df = pd.DataFrame(daily_rows)
     df.sort_values(by=["Date", "Symbol"], inplace=True)
     print(df)
     df.to_csv("holdings_pnl_tracker.csv", index=False)
+    
+    
+import plotly.express as px
+import plotly.graph_objects as go
+
+holdings_file = "holdings.csv"
+pnl_file = "holdings_pnl_tracker.csv"
+
+holdings_df = pd.read_csv(holdings_file)
+df = pd.read_csv(pnl_file)
+df['Date'] = pd.to_datetime(df['Date'], errors='coerce').dt.date
+
+df_total = df.groupby('Date')['PnL'].sum().reset_index()
+
+df_total['Month'] = pd.to_datetime(df_total['Date']).dt.to_period('M').dt.to_timestamp()
+first_trading_days = df_total.groupby('Month').first().reset_index()
+tick_dates = first_trading_days['Date'].tolist()
+
+df_total['Line Color'] = df_total['PnL'].apply(lambda x: 'green' if x >= 0 else 'red')
+df_total['Marker Color'] = df_total['PnL'].apply(lambda x: 'green' if x >= 0 else 'red')
+
+fig = go.Figure()
+
+fig.update_xaxes(
+    tickmode='array',
+    tickvals=tick_dates,
+    tickformat="%b %Y"
+)
+
+for i in range(1, len(df_total)):
+    x0 = pd.to_datetime(df_total['Date'][i-1])
+    x1 = pd.to_datetime(df_total['Date'][i])
+    y0 = df_total['PnL'][i-1]
+    y1 = df_total['PnL'][i]
+
+    if (y0 < 0 and y1 >= 0) or (y0 >= 0 and y1 < 0):
+        # Find the zero crossing point via linear interpolation
+        crossing_ratio = abs(y0) / (abs(y0) + abs(y1))
+        crossing_time = x0 + (x1 - x0) * crossing_ratio
+
+        # Draw first segment (x0 to crossing point)
+        fig.add_scatter(
+            x=[x0, crossing_time],
+            y=[y0, 0],
+            mode='lines',
+            line=dict(color='red' if y0 < 0 else 'green', width=3),
+            showlegend=False,
+            hoverinfo='skip'
+        )
+
+        # Draw second segment (crossing point to x1)
+        fig.add_scatter(
+            x=[crossing_time, x1],
+            y=[0, y1],
+            mode='lines',
+            line=dict(color='green' if y1 >= 0 else 'red', width=3),
+            showlegend=False,
+            hoverinfo='skip'
+        )
+    else:
+        # No crossing — same color throughout
+        line_color = 'green' if y1 >= 0 else 'red'
+        fig.add_scatter(
+            x=[x0, x1],
+            y=[y0, y1],
+            mode='lines',
+            line=dict(color=line_color, width=3),
+            showlegend=False,
+            hoverinfo='skip'
+        )
+
+fig.add_scatter(
+    x=df_total['Date'],
+    y=df_total['PnL'],
+    mode='none',
+    hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y}<extra></extra>",
+    showlegend=False
+)
+
+fig.update_layout(
+    xaxis_title=None,
+    yaxis_title=None,
+    title="Portfolio PnL Over Time",
+    template='plotly_dark'
+)
+
+fig.show()
+html_graph = fig.to_html(include_plotlyjs='cdn', full_html=False)
+
+# This part needs to be corrected to aggregate correctly based on Ticker and update the invested and quantity.
+portfolio_data = {}
+
+for _, row in holdings_df.iterrows():
+    ticker = row['Symbol']
+    quantity = row['Quantity']
+    price = row['Entry']  # Assuming you have the 'Price' column in holdings.csv
+
+    # Aggregate total quantity and total invested for each ticker
+    if ticker not in portfolio_data:
+        portfolio_data[ticker] = {
+            'Total Qty': 0,
+            'Total Invested': 0
+        }
+
+    portfolio_data[ticker]['Total Qty'] += quantity
+    # Aggregate total quantity and total invested for each ticker
+    portfolio_data[ticker]['Total Invested'] += round(quantity * price, 2)  # Round to 2 decimal places
+
+
+portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>Current PnL</th><th>PnL %</th></tr>"
+
+# Calculate total invested
+total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
+
+# Iterate through portfolio dictionary and extract the current PnL from the pnl file
+for ticker, data in portfolio_data.items():
+    # Extract latest PnL for the ticker
+    latest_pnl = df[df['Symbol'] == ticker]['PnL'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
+    # Calculate PnL percentage for the stock
+    pnl_percentage = (latest_pnl / data['Total Invested']) * 100 if data['Total Invested'] != 0 else 0
+    
+    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{data['Total Invested']}</td><td>{latest_pnl}</td><td>{pnl_percentage:.2f}%</td></tr>"
+
+portfolio_table += "</table>"
+
+# Build full HTML page with graph and portfolio table
+html_template = f"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📈 My Portfolio Tracker</title>
+    <style>
+        body {{
+            background-color: #121212;
+            color: white;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }}
+        h1 {{
+            text-align: center;
+            margin-top: 0;
+        }}
+        .info {{
+            text-align: center;
+            margin-bottom: 30px;
+        }}
+        .plot {{
+            width: 100%;
+            max-width: 1000px;
+            margin: auto;
+        }}
+        table {{
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            text-align: center;
+            table-layout: auto;
+        }}
+        th, td {{
+            padding: 8px;
+            border: 1px solid #ddd;
+        }}
+        th {{
+            background-color: #444;
+        }}
+    </style>
+</head>
+<body>
+    <h1>📊 Portfolio Dashboard</h1>
+    <div class="info">
+        <p>Owner: <strong>SM Thamizha</strong></p>
+        <p>Last Updated: {datetime.today().strftime('%d-%m-%Y')}</p>
+    </div>
+    <div class="plot">
+        {html_graph}
+    </div>
+
+    <div class="portfolio">
+        <h2 style="text-align: center;">Portfolio Overview</h2>
+        {portfolio_table}
+    </div>
+</body>
+</html>
+"""
+
+# Write the full HTML to index.html
+with open("index.html", "w") as f:
+    f.write(html_template)
