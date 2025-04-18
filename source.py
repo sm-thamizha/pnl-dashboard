@@ -291,6 +291,11 @@ with open("index.html", "w") as f:
 
 
 import subprocess
+key = os.getenv("SSH_PRIVATE_KEY").replace(" ", "\n").encode()
+print(key)
+subprocess.run(["eval", "$(ssh-agent -s)"], shell=True)
+process = subprocess.Popen(["ssh-add", "-"], stdin=subprocess.PIPE)
+process.communicate(input=key.encode())
 
 # SSH URL for your repository
 repo_url = "git@github.com:sm-thamizha/pnl-dashboard-trial.git"
