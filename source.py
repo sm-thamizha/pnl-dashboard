@@ -291,7 +291,7 @@ with open("index.html", "w") as f:
 
 
 import subprocess
-key = os.getenv("SSH_PRIVATE_KEY").replace(" ", "\n").encode()
+key = os.getenv("SSH_PRIVATE_KEY").replace(" ", "\n")
 print(key)
 subprocess.run(["eval", "$(ssh-agent -s)"], shell=True)
 process = subprocess.Popen(["ssh-add", "-"], stdin=subprocess.PIPE)
