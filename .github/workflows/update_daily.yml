@@ -34,3 +34,9 @@ jobs:
           git add index.html
           git commit -m "Auto update dashboard" || echo "No changes"
           git push
+          
+      - name: Deploy to GitHub Pages
+        uses: actions/configure-pages@v2
+        with:
+          branch: main
+          folder: .
