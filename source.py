@@ -212,6 +212,14 @@ portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>Cur
 # Calculate total invested
 total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
 
+current_value = 0
+for ticker, data in portfolio_data.items():
+    latest_price = df[df['Symbol'] == ticker]['Close'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
+    current_value += latest_price * data['Total Qty']
+
+total_pnl = current_value - total_invested
+total_pnl_percentage = (total_pnl / total_invested) * 100 if total_invested != 0 else 0
+
 # Iterate through portfolio dictionary and extract the current PnL from the pnl file
 for ticker, data in portfolio_data.items():
     # Extract latest PnL for the ticker
@@ -272,6 +280,11 @@ html_template = f"""
     <div class="info">
         <p>Owner: <strong>SM Thamizha</strong></p>
         <p>Last Updated: {datetime.today().strftime('%d-%m-%Y')}</p>
+    </div>
+    <div class="summary" style="text-align: center; margin-bottom: 30px;">
+    <p><strong>💰 Total Invested:</strong> ₹{total_invested:,.2f}</p>
+    <p><strong>📈 Current Value:</strong> ₹{total_current_value:,.2f}</p>
+    <p><strong>📊 Portfolio PnL:</strong> ₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</p>
     </div>
     <div class="plot">
         {html_graph}
