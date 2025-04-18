@@ -3,4 +3,3 @@ requests==2.31.0
 fyers-apiv3==3.1.7
 numpy>=1.26.0
 plotly==6.0.1
-pip>=25.0.1
