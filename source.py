@@ -218,7 +218,7 @@ for ticker, data in portfolio_data.items():
     current_value += latest_price * data['Total Qty']
 
 total_pnl = current_value - total_invested
-total_pnl_percentage = (total_pnl / total_invested) * 100 if total_invested != 0 else 0
+pnl_percent = (total_pnl / total_invested) * 100 if total_invested != 0 else 0
 
 # Iterate through portfolio dictionary and extract the current PnL from the pnl file
 for ticker, data in portfolio_data.items():
@@ -283,7 +283,7 @@ html_template = f"""
     </div>
     <div class="summary" style="text-align: center; margin-bottom: 30px;">
     <p><strong>💰 Total Invested:</strong> ₹{total_invested:,.2f}</p>
-    <p><strong>📈 Current Value:</strong> ₹{total_current_value:,.2f}</p>
+    <p><strong>📈 Current Value:</strong> ₹{current_value:,.2f}</p>
     <p><strong>📊 Portfolio PnL:</strong> ₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</p>
     </div>
     <div class="plot">
