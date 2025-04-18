@@ -32,13 +32,13 @@ jobs:
       - name: Run update script
         run: python source.py
 
-      - name: Setup Pages
+      - name: Set up GitHub Pages
         uses: actions/configure-pages@v3
 
-      - name: Upload Pages Artifact
+      - name: Upload artifact for GitHub Pages
         uses: actions/upload-pages-artifact@v2
         with:
-          path: '.'  # This assumes index.html is at the root
+          path: '.'  # or the folder where index.html is
 
       - name: Deploy to GitHub Pages
         id: deployment
