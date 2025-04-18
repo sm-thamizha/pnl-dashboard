@@ -25,11 +25,12 @@ jobs:
 
     - name: Run portfolio script
       run: python source.py
-
+        
     - name: Commit and push changes
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git remote set-url origin https://x-access-token:${{ secrets.GH_PAT }}@github.com/sm-thamizha/pnl-dashboard-trial.git
         git add index.html
         git commit -m "Auto update dashboard" || echo "No changes to commit"
         git push
