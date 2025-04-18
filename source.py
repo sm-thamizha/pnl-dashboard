@@ -214,7 +214,7 @@ total_invested = sum([data['Total Invested'] for data in portfolio_data.values()
 
 current_value = 0
 for ticker, data in portfolio_data.items():
-    latest_price = df[df['Symbol'] == ticker]['Close'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
+    latest_price = df[df['Symbol'] == ticker]['Close Price'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
     current_value += latest_price * data['Total Qty']
 
 total_pnl = current_value - total_invested
