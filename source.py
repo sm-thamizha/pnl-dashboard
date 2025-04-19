@@ -333,10 +333,13 @@ html_template = f"""<!DOCTYPE html>
     /* Chart container */
     .plot {{
       flex: 1;
+      width: 50%;
+      min-width: 48%;
+      max-width: 100%;
       height: 500px;
       box-sizing: border-box;
-      min-width: 48%;
-    }}
+}}
+
     .summary-item span {{
       font-weight: normal;  /* Remove bold from span elements */
     }}
@@ -382,7 +385,10 @@ html_template = f"""<!DOCTYPE html>
     .plot, .table-container {{
       width: 100%;
     }}}}
-    
+    #plot-container > div {{
+      width: 100% !important;
+      height: 100% !important;
+      }}
     /* Table header styling */
     th {{
       background-color: #ffe082;  /* Soft yellow */
@@ -441,7 +447,7 @@ html_template = f"""<!DOCTYPE html>
   <div class="content">
 
     <!-- Portfolio PnL Line Chart -->
-	<div class="plot">
+	<div class="plot" id="plot-container">
 		{html_graph}
 	</div>
   <!-- Holdings Table -->
