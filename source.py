@@ -459,15 +459,13 @@ html_template = f"""<!DOCTYPE html>
 	<div class="plot" id="plot-container">
 		{html_graph}
 	</div>
-  <!-- Holdings Table -->
-  <div class="table-container">
-    <table>
-      <tbody id="holdingsTable">
-        <!-- Your generated portfolio table rows will be inserted here -->
+  <!--div class="table-container"-->
+    <!--table>
+     <!--tbody id="holdingsTable"-->
         {portfolio_table}
-      </tbody>
-    </table>
-  </div>
+      <!--/tbody-->
+   <!--/table-->
+  <!--/div-->
   </div>
 </body>
 </html>"""
