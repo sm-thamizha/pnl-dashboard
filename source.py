@@ -376,13 +376,13 @@ html_template = f"""<!DOCTYPE html>
   <!-- Summary Boxes -->
   <div class="summary">
     <div class="summary-item">
-      💰 <strong>Total Invested:</strong> ₹{ total_invested:,.2f }
+      💰 <strong>Total Invested:</strong> ₹{total_invested:,.2f}
     </div>
     <div class="summary-item">
-      📈 <strong>Current Value:</strong> ₹{ current_value:,.2f }
+      📈 <strong>Current Value:</strong> ₹{current_value:,.2f}
     </div>
     <div class="summary-item">
-      📊 <strong>Portfolio PnL:</strong> ₹{ total_pnl:,.2f } ({ pnl_percent:.2f }%)
+      📊 <strong>Portfolio PnL:</strong> ₹{total_pnl:,.2f} ({pnl_percent:.2f}%)
     </div>
   </div>
 
@@ -391,7 +391,7 @@ html_template = f"""<!DOCTYPE html>
 
     <!-- Portfolio PnL Line Chart -->
 	<div class="plot">
-		{ html_graph | safe }
+		{html_graph}
 	</div>
 
   <!-- Holdings Table -->
@@ -409,7 +409,7 @@ html_template = f"""<!DOCTYPE html>
       </thead>
       <tbody id="holdingsTable">
         <!-- Your generated portfolio table rows will be inserted here -->
-        { portfolio_table }
+        {portfolio_table}
       </tbody>
     </table>
   </div>
