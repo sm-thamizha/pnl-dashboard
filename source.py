@@ -391,7 +391,7 @@ html_template = f"""<!DOCTYPE html>
       width: 100%;
     }}}}
     #plot-container > div {{
-      width: 100% !important;
+      width: 50% !important;
       height: 100% !important;
       }}
     /* Table header styling */
