@@ -179,6 +179,9 @@ fig.add_scatter(
 fig.update_layout(
     xaxis_title=None,
     yaxis_title=None,
+    yaxis=dict(
+        tickformat=".2~s"  # Use SI prefix (k, M, etc.) and round to 2 decimals
+    )
     title="Portfolio PnL Over Time",
     template='plotly_dark'
 )
@@ -316,6 +319,15 @@ html_template = f"""<!DOCTYPE html>
       flex: 1;
       overflow-x: auto;
     }}
+
+    .table-container h3 {{
+      margin-bottom: 0;
+    }}
+
+    .table-container table {{
+      margin-top: 0.25rem;
+    }}
+
 
     /* Table styling */
     table {{
