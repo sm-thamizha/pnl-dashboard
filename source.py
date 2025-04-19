@@ -235,6 +235,11 @@ for ticker, data in portfolio_data.items():
     
     portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{data['Total Invested']}</td><td>{latest_pnl}</td><td>{pnl_percentage:.2f}%</td></tr>"
 
+if total_pnl > 0:
+    pnl_class = "text-green"
+else:
+    pnl_class = "text-red"
+
 html_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -277,7 +282,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Owner and date info */
     .info {{
-      text-align: right;
+      text-align: center;
       font-size: 1rem;
       color: #6d4c41;
       line-height: 1.2;
@@ -296,10 +301,11 @@ html_template = f"""<!DOCTYPE html>
     .summary-item {{
       font-size: 1.25rem;
       padding: 1rem;
+      flex: 1;
       background-color: #fff3cd;  /* Light yellow-orange background */
       border: 2px solid #ffcf40;  /* Yellow border */
       border-radius: 10px;
-      min-width: 250px;
+      min-width: 0px;
       text-align: center;
       color: #5d4037;
     }}
@@ -411,7 +417,7 @@ html_template = f"""<!DOCTYPE html>
     </div>
     <div class="summary-item">
       📊 <strong>Portfolio PnL:</strong>
-      <span>₹{total_pnl:,.2f}({pnl_percent:.2f}%)</span>
+      <span class="{pnl_class}">₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</span>
     </div>
   </div>
 
@@ -422,7 +428,6 @@ html_template = f"""<!DOCTYPE html>
 	<div class="plot">
 		{html_graph}
 	</div>
-  </div>
   <!-- Holdings Table -->
   <div class="table-container">
     <h3>📋 Holdings Overview</h3>
@@ -432,6 +437,7 @@ html_template = f"""<!DOCTYPE html>
         {portfolio_table}
       </tbody>
     </table>
+  </div>
   </div>
 </body>
 </html>"""
