@@ -181,7 +181,7 @@ fig.update_layout(
     yaxis_title=None,
     yaxis=dict(
         tickformat=".2~s"  # Use SI prefix (k, M, etc.) and round to 2 decimals
-    )
+    ),
     title="Portfolio PnL Over Time",
     template='plotly_dark'
 )
