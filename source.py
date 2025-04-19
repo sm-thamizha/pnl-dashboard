@@ -236,6 +236,7 @@ html_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📈 Portfolio Dashboard</title>
 
   <!-- Google Fonts for custom font styles -->
@@ -252,7 +253,7 @@ html_template = f"""<!DOCTYPE html>
       background-color: #fff8e1; /* Light yellow background */
       color: #3e2723;             /* Dark brown text */
       font-family: 'Silkscreen', sans-serif;
-      padding: 1rem 2 rem 2 rem 2 rem;
+      padding: 1rem 2rem 2rem 2rem;
     }}
 
     /* Header section layout */
@@ -262,6 +263,17 @@ html_template = f"""<!DOCTYPE html>
       align-items: flex-start;
       margin-bottom: 2rem;
     }}
+    @media (max-width: 768px) {{
+    .header {{
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }}
+
+    .info {{
+      text-align: center;
+      margin-top: 0.5rem;
+    }}}}
 
     /* Dashboard title style */
     h1 {{
@@ -280,7 +292,10 @@ html_template = f"""<!DOCTYPE html>
       line-height: 1.2;
       font-family: 'Silkscreen', sans-serif;
     }}
-
+    .container {{
+      max-width: 1200px;
+      margin: 0 auto;
+    }}
     /* Summary boxes container */
     .summary {{
       display: flex;
@@ -311,7 +326,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Chart container */
     .plot {{
-      flex: 1.2;
+      flex: 1;
       height: 500px;
     }}
 
@@ -384,7 +399,7 @@ html_template = f"""<!DOCTYPE html>
 </head>
 
 <body>
-
+<div class="container">
   <!-- Dashboard Header Section -->
   <div class="header">
     <h1>📊 Portfolio Dashboard</h1>
@@ -414,7 +429,7 @@ html_template = f"""<!DOCTYPE html>
 	<div class="plot">
 		{html_graph}
 	</div>
-
+  </div>
   <!-- Holdings Table -->
   <div class="table-container">
     <h3>📋 Holdings Overview</h3>
@@ -425,7 +440,7 @@ html_template = f"""<!DOCTYPE html>
       </tbody>
     </table>
   </div>
-
+</div>
 </body>
 </html>"""
 
