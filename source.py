@@ -428,7 +428,7 @@ html_template = f"""<!DOCTYPE html>
   <div class="header">
     <h1>📊 Portfolio Dashboard</h1>
     <div class="info">
-      <div><strong>Owner:</strong> Lavs</div>
+      <div><strong>Owner:</strong> SM Thamizha</div>
       <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
     </div>
   </div>
