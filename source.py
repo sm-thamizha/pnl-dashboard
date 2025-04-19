@@ -462,7 +462,7 @@ html_template = f"""<!DOCTYPE html>
   <!--div class="table-container"-->
     <!--table>
      <!--tbody id="holdingsTable"-->
-        {portfolio_table}
+        <!--{{portfolio_table}}-->
       <!--/tbody-->
    <!--/table-->
   <!--/div-->
