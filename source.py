@@ -184,8 +184,8 @@ fig.update_layout(
     ),
     title="Portfolio PnL",
     template='ggplot2',
-    plot_bgcolor: 'rgba(0, 0, 0, 0)',
-    paper_bgcolor: 'rgba(0, 0, 0, 0)',
+    plot_bgcolor='rgba(0, 0, 0, 0)',
+    paper_bgcolor='rgba(0, 0, 0, 0)',
     font=dict(color='#3e2723')
 )
 
