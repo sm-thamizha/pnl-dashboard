@@ -326,6 +326,7 @@ html_template = f"""<!DOCTYPE html>
     /* Main content layout: Chart + Table side-by-side */
     .content {{
       display: flex;
+      flex-direction: column;
       justify: space-between;
       gap: 1rem;
     }}
@@ -350,6 +351,12 @@ html_template = f"""<!DOCTYPE html>
       box-sizing: border-box;
       min-width: 48%;
     }}
+    .summary-item .label {{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;}}
 
     .table-container h3 {{
       margin-bottom: 0;
@@ -430,15 +437,19 @@ html_template = f"""<!DOCTYPE html>
   <!-- Summary Boxes -->
   <div class="summary">
     <div class="summary-item">
-      💰 <strong>Total Invested:</strong>
+    <div class="label">
+      💰<strong>Total Invested:</strong></div>
       <span>₹{total_invested:,.2f}</span>
     </div>
     <div class="summary-item">
-      📈 <strong>Current Value:</strong>
+      <div class="label">
+      📈<strong>Current Value:</strong> </div>
       <span>₹{current_value:,.2f}</span>
     </div>
     <div class="summary-item">
-      📊 <strong>Portfolio PnL:</strong>
+    <div class="label">
+      📊<strong>Portfolio PnL:</strong>
+      </div>
       <span class="{pnl_class}">₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</span>
     </div>
   </div>
