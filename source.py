@@ -183,7 +183,10 @@ fig.update_layout(
         tickformat=".2~s"  # Use SI prefix (k, M, etc.) and round to 2 decimals
     ),
     title="Portfolio PnL",
-    template='ggplot2'
+    template='ggplot2',
+    plot_bgcolor: 'rgba(0, 0, 0, 0)',
+    paper_bgcolor: 'rgba(0, 0, 0, 0)',
+    font=dict(color='#3e2723')
 )
 
 fig.show()
@@ -259,9 +262,8 @@ html_template = f"""<!DOCTYPE html>
     /* Header section layout */
     .header {{
       display: flex;
-      justify-content: space-between; /* Title on left, info on right */
-      align-items: flex-start;
-      margin-bottom: 2rem;
+      flex-direction: column; 
+      align-items: center
     }}
 
     /* Dashboard title style */
@@ -284,9 +286,9 @@ html_template = f"""<!DOCTYPE html>
     /* Summary boxes container */
     .summary {{
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       flex-wrap: wrap;
-      gap: 2rem;
+      gap: 1rem;
       margin-bottom: 2rem;
     }}
 
@@ -299,14 +301,14 @@ html_template = f"""<!DOCTYPE html>
       border-radius: 10px;
       min-width: 250px;
       text-align: center;
-      font-weight: bold;
       color: #5d4037;
     }}
 
     /* Main content layout: Chart + Table side-by-side */
     .content {{
       display: flex;
-      gap: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
     }}
 
     /* Chart container */
@@ -347,7 +349,18 @@ html_template = f"""<!DOCTYPE html>
       border: 1px solid #bcaaa4;
       white-space: nowrap;
     }}
+    @media (max-width: 768px) {{
+    .summary {{
+      flex-direction: column;  /* Stack summary boxes on mobile */
+    }}
 
+    .content {{
+      flex-direction: column;  /* Stack chart and table */
+    }}
+    .plot, .table-container {{
+      width: 100%;
+    }}}}
+    
     /* Table header styling */
     th {{
       background-color: #ffe082;  /* Soft yellow */
