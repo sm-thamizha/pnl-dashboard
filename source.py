@@ -186,7 +186,11 @@ fig.update_layout(
     template='ggplot2',
     plot_bgcolor='rgba(0, 0, 0, 0)',
     paper_bgcolor='rgba(0, 0, 0, 0)',
-    font=dict(color='#3e2723')
+    font=dict(
+        family="Silkscreen, sans-serif",
+        size=12,
+        color="#3e2723"
+    )
 )
 
 fig.show()
@@ -267,8 +271,11 @@ html_template = f"""<!DOCTYPE html>
     /* Header section layout */
     .header {{
       display: flex;
+      justify-content: space-between;
       flex-direction: column; 
-      align-items: center
+      align-items: center;
+      width: 100%;
+      position: relative;
     }}
 
     /* Dashboard title style */
@@ -282,11 +289,12 @@ html_template = f"""<!DOCTYPE html>
 
     /* Owner and date info */
     .info {{
-      text-align: center;
+      text-align: right;
       font-size: 1rem;
       color: #6d4c41;
       line-height: 1.2;
       font-family: 'Silkscreen', sans-serif;
+      margin-left: auto;
     }}
     /* Summary boxes container */
     .summary {{
@@ -308,12 +316,17 @@ html_template = f"""<!DOCTYPE html>
       min-width: 0px;
       text-align: center;
       color: #5d4037;
+      white-space: normal;  /* Allow text to wrap */
+      overflow-wrap: break-word; /* Ensures long words break properly */
+      display: flex;
+      flex-direction: column; /* Stacks content vertically inside the box */
+      justify-content: center;
     }}
 
     /* Main content layout: Chart + Table side-by-side */
     .content {{
       display: flex;
-      flex-wrap: wrap;
+      justify: space-between;
       gap: 1rem;
     }}
 
@@ -321,6 +334,8 @@ html_template = f"""<!DOCTYPE html>
     .plot {{
       flex: 1;
       height: 500px;
+      box-sizing: border-box;
+      min-width: 48%;
     }}
     .summary-item span {{
       font-weight: normal;  /* Remove bold from span elements */
@@ -329,6 +344,8 @@ html_template = f"""<!DOCTYPE html>
     .table-container {{
       flex: 1;
       overflow-x: auto;
+      box-sizing: border-box;
+      min-width: 48%;
     }}
 
     .table-container h3 {{
@@ -359,7 +376,6 @@ html_template = f"""<!DOCTYPE html>
     .summary {{
       flex-direction: column;  /* Stack summary boxes on mobile */
     }}
-
     .content {{
       flex-direction: column;  /* Stack chart and table */
     }}
@@ -430,7 +446,6 @@ html_template = f"""<!DOCTYPE html>
 	</div>
   <!-- Holdings Table -->
   <div class="table-container">
-    <h3>📋 Holdings Overview</h3>
     <table>
       <tbody id="holdingsTable">
         <!-- Your generated portfolio table rows will be inserted here -->
