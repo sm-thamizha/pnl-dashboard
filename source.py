@@ -466,71 +466,189 @@ for ticker, data in portfolio_data.items():
 portfolio_table += "</table>"
 
 # Build full HTML page with graph and portfolio table
-html_template = f"""
-<!DOCTYPE html>
+html_template = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>📈 My Portfolio Tracker</title>
-    <style>
-        body {{
-            background-color: #121212;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }}
-        h1 {{
-            text-align: center;
-            margin-top: 0;
-        }}
-        .info {{
-            text-align: center;
-            margin-bottom: 30px;
-        }}
-        .plot {{
-            width: 100%;
-            max-width: 1000px;
-            margin: auto;
-        }}
-        table {{
-            width: 100%;
-            margin-top: 30px;
-            border-collapse: collapse;
-            text-align: center;
-            table-layout: auto;
-        }}
-        th, td {{
-            padding: 8px;
-            border: 1px solid #ddd;
-        }}
-        th {{
-            background-color: #444;
-        }}
-    </style>
+  <meta charset="UTF-8">
+  <title>📈 Portfolio Dashboard</title>
+
+  <!-- Google Fonts for custom font styles -->
+  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=EB+Garamond&display=swap" rel="stylesheet">
+
+  <!-- CSS Styling -->
+  <style>
+    /* General body styles */
+    body {
+      background-color: #fff8e1; /* Light yellow background */
+      color: #3e2723;             /* Dark brown text */
+      font-family: 'EB Garamond', serif;
+      padding: 2rem;
+    }
+
+    /* Header section layout */
+    .header {
+      display: flex;
+      justify-content: space-between; /* Title on left, info on right */
+      align-items: flex-start;
+      margin-bottom: 2rem;
+    }
+
+    /* Dashboard title style */
+    h1 {
+      font-family: 'Lobster', cursive;
+      font-size: 3rem;
+      color: #ff6f00;
+      text-shadow: 2px 2px #00000044;
+      margin: 0;
+    }
+
+    /* Owner and date info */
+    .info {
+      text-align: right;
+      font-size: 1rem;
+      color: #6d4c41;
+      line-height: 1.2;
+      font-family: 'EB Garamond', serif;
+    }
+
+    /* Summary boxes container */
+    .summary {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Individual summary box styling */
+    .summary-item {
+      font-size: 1.25rem;
+      padding: 1rem;
+      background-color: #fff3cd;  /* Light yellow-orange background */
+      border: 2px solid #ffcf40;  /* Yellow border */
+      border-radius: 10px;
+      min-width: 250px;
+      text-align: center;
+      font-weight: bold;
+      color: #5d4037;
+    }
+
+    /* Main content layout: Chart + Table side-by-side */
+    .content {
+      display: flex;
+      gap: 2rem;
+    }
+
+    /* Chart container */
+    #pnlChart {
+      flex: 1.2;
+      height: 500px;
+    }
+
+    /* Table container (with scroll if needed) */
+    .table-container {
+      flex: 1;
+      overflow-x: auto;
+    }
+
+    /* Table styling */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+      font-size: 0.95rem;
+    }
+
+    /* Table cell styles */
+    th, td {
+      padding: 0.75rem;
+      text-align: center;
+      border: 1px solid #bcaaa4;
+      white-space: nowrap;
+    }
+
+    /* Table header styling */
+    th {
+      background-color: #ffe082;  /* Soft yellow */
+      color: #4e2600;
+      font-weight: bold;
+    }
+
+    /* Zebra stripe effect for table rows */
+    tbody tr:nth-child(even) {
+      background-color: #fffde7;
+    }
+
+    /* Hover effect for rows */
+    tbody tr:hover {
+      background-color: #fce4ec;
+    }
+
+    /* Text color helpers for PnL positive/negative */
+    .text-green {
+      color: #2e7d32;
+    }
+
+    .text-red {
+      color: #c62828;
+    }
+  </style>
 </head>
+
 <body>
+
+  <!-- Dashboard Header Section -->
+  <div class="header">
     <h1>📊 Portfolio Dashboard</h1>
     <div class="info">
-        <p>Owner: <strong>SM Thamizha</strong></p>
-        <p>Last Updated: {datetime.today().strftime('%d-%m-%Y')}</p>
+      <div><strong>Owner:</strong> SM Thamizha</div>
+      <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
     </div>
-    <div class="summary" style="text-align: center; margin-bottom: 30px;">
-    <p><strong>💰 Total Invested:</strong> ₹{total_invested:,.2f}</p>
-    <p><strong>📈 Current Value:</strong> ₹{current_value:,.2f}</p>
-    <p><strong>📊 Portfolio PnL:</strong> ₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</p>
-    </div>
-    <div class="plot">
-        {html_graph}
-    </div>
+  </div>
 
-    <div class="portfolio">
-        <h2 style="text-align: center;">Portfolio Overview</h2>
-        {portfolio_table}
+  <!-- Summary Boxes -->
+  <div class="summary">
+    <div class="summary-item">
+      💰 <strong>Total Invested:</strong> ₹{ total_invested:,.2f }
     </div>
+    <div class="summary-item">
+      📈 <strong>Current Value:</strong> ₹{ current_value:,.2f }
+    </div>
+    <div class="summary-item">
+      📊 <strong>Portfolio PnL:</strong> ₹{ total_pnl:,.2f } ({ pnl_percent:.2f }%)
+    </div>
+  </div>
+
+  <!-- Main Chart + Table Layout -->
+  <div class="content">
+
+    <!-- Portfolio PnL Line Chart -->
+	<div class="plot">
+		{{ html_graph | safe }}
+	</div>
+
+  <!-- Holdings Table -->
+  <div class="table-container">
+    <h3>📋 Holdings Overview</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Ticker</th>
+          <th>Qty</th>
+          <th>Invested (₹)</th>
+          <th>PnL (₹)</th>
+          <th>PnL (%)</th>
+        </tr>
+      </thead>
+      <tbody id="holdingsTable">
+        <!-- Your generated portfolio table rows will be inserted here -->
+        { portfolio_table }
+      </tbody>
+    </table>
+  </div>
+
 </body>
-</html>
-"""
+</html>"""
 # Write the full HTML to index.html
 with open("index.html", "w") as f:
     f.write(html_template)
