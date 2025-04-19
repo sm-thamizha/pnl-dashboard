@@ -326,7 +326,7 @@ html_template = f"""<!DOCTYPE html>
     /* Main content layout: Chart + Table side-by-side */
     .content {{
       display: flex;
-      flex-direction: column;
+      flex-direction: row;
       justify: space-between;
       gap: 1rem;
     }}
@@ -335,8 +335,6 @@ html_template = f"""<!DOCTYPE html>
     .plot {{
       flex: 1;
       width: 50%;
-      min-width: 48%;
-      max-width: 100%;
       height: 500px;
       box-sizing: border-box;
 }}
@@ -349,7 +347,7 @@ html_template = f"""<!DOCTYPE html>
       flex: 1;
       overflow-x: auto;
       box-sizing: border-box;
-      min-width: 48%;
+      width: 50%;
     }}
     .summary-item .label {{
       display: flex;
