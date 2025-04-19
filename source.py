@@ -245,50 +245,50 @@ html_template = f"""<!DOCTYPE html>
   <!-- CSS Styling -->
   <style>
     /* General body styles */
-    body {
+    body {{
       background-color: #fff8e1; /* Light yellow background */
       color: #3e2723;             /* Dark brown text */
       font-family: 'EB Garamond', serif;
       padding: 2rem;
-    }
+    }}
 
     /* Header section layout */
-    .header {
+    .header {{
       display: flex;
       justify-content: space-between; /* Title on left, info on right */
       align-items: flex-start;
       margin-bottom: 2rem;
-    }
+    }}
 
     /* Dashboard title style */
-    h1 {
+    h1 {{
       font-family: 'Lobster', cursive;
       font-size: 3rem;
       color: #ff6f00;
       text-shadow: 2px 2px #00000044;
       margin: 0;
-    }
+    }}
 
     /* Owner and date info */
-    .info {
+    .info {{
       text-align: right;
       font-size: 1rem;
       color: #6d4c41;
       line-height: 1.2;
       font-family: 'EB Garamond', serif;
-    }
+    }}
 
     /* Summary boxes container */
-    .summary {
+    .summary {{
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       gap: 2rem;
       margin-bottom: 2rem;
-    }
+    }}
 
     /* Individual summary box styling */
-    .summary-item {
+    .summary-item {{
       font-size: 1.25rem;
       padding: 1rem;
       background-color: #fff3cd;  /* Light yellow-orange background */
@@ -298,67 +298,67 @@ html_template = f"""<!DOCTYPE html>
       text-align: center;
       font-weight: bold;
       color: #5d4037;
-    }
+    }}
 
     /* Main content layout: Chart + Table side-by-side */
-    .content {
+    .content {{
       display: flex;
       gap: 2rem;
-    }
+    }}
 
     /* Chart container */
-    #pnlChart {
+    #pnlChart {{
       flex: 1.2;
       height: 500px;
-    }
+    }}
 
     /* Table container (with scroll if needed) */
-    .table-container {
+    .table-container {{
       flex: 1;
       overflow-x: auto;
-    }
+    }}
 
     /* Table styling */
-    table {
+    table {{
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
       font-size: 0.95rem;
-    }
+    }}
 
     /* Table cell styles */
-    th, td {
+    th, td {{
       padding: 0.75rem;
       text-align: center;
       border: 1px solid #bcaaa4;
       white-space: nowrap;
-    }
+    }}
 
     /* Table header styling */
-    th {
+    th {{
       background-color: #ffe082;  /* Soft yellow */
       color: #4e2600;
       font-weight: bold;
-    }
+    }}
 
     /* Zebra stripe effect for table rows */
-    tbody tr:nth-child(even) {
+    tbody tr:nth-child(even) {{
       background-color: #fffde7;
-    }
+    }}
 
     /* Hover effect for rows */
-    tbody tr:hover {
+    tbody tr:hover {{
       background-color: #fce4ec;
-    }
+    }}
 
     /* Text color helpers for PnL positive/negative */
-    .text-green {
+    .text-green {{
       color: #2e7d32;
-    }
+    }}
 
-    .text-red {
+    .text-red {{
       color: #c62828;
-    }
+    }}
   </style>
 </head>
 
@@ -391,7 +391,7 @@ html_template = f"""<!DOCTYPE html>
 
     <!-- Portfolio PnL Line Chart -->
 	<div class="plot">
-		{{ html_graph | safe }}
+		{ html_graph | safe }
 	</div>
 
   <!-- Holdings Table -->
