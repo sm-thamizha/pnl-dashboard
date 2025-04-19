@@ -3,7 +3,8 @@ name: Update and Deploy Dashboard
 on:
   schedule:
     - cron: '30 10 * * 1-5'  # 4 PM IST on weekdays (triggered via cron)
-
+  workflow_dispatch:
+  
 permissions:
   contents: write  # Allow GitHub Pages deployment (this is still required for writing contents)
 
