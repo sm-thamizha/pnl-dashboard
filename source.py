@@ -240,6 +240,7 @@ html_template = f"""<!DOCTYPE html>
 
   <!-- Google Fonts for custom font styles -->
   <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- Plotly.js for interactive charts -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -250,8 +251,8 @@ html_template = f"""<!DOCTYPE html>
     body {{
       background-color: #fff8e1; /* Light yellow background */
       color: #3e2723;             /* Dark brown text */
-      font-family: 'EB Garamond', serif;
-      padding: 2rem;
+      font-family: 'Silkscreen', sans-serif;
+      padding: 1rem 2 rem 2 rem 2 rem;
     }}
 
     /* Header section layout */
@@ -277,7 +278,7 @@ html_template = f"""<!DOCTYPE html>
       font-size: 1rem;
       color: #6d4c41;
       line-height: 1.2;
-      font-family: 'EB Garamond', serif;
+      font-family: 'Silkscreen', sans-serif;
     }}
 
     /* Summary boxes container */
@@ -309,7 +310,7 @@ html_template = f"""<!DOCTYPE html>
     }}
 
     /* Chart container */
-    #pnlChart {{
+    .plot {{
       flex: 1.2;
       height: 500px;
     }}
@@ -352,6 +353,15 @@ html_template = f"""<!DOCTYPE html>
       font-weight: bold;
     }}
 
+    @media (max-width: 768px) {
+    .content {
+      flex-direction: column;
+    }
+    .plot, .table-container {
+      width: 100%;
+    }}
+
+    
     /* Zebra stripe effect for table rows */
     tbody tr:nth-child(even) {{
       background-color: #fffde7;
