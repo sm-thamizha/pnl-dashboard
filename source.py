@@ -353,13 +353,13 @@ html_template = f"""<!DOCTYPE html>
       font-weight: bold;
     }}
 
-    @media (max-width: 768px) {
-    .content {
+    @media (max-width: 768px) {{
+	    .content {{
       flex-direction: column;
-    }
-    .plot, .table-container {
-      width: 100%;
     }}
+    .plot, .table-container {{
+      width: 100%;
+    }}}}
 
     
     /* Zebra stripe effect for table rows */
