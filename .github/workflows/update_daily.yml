@@ -5,9 +5,7 @@ on:
     - cron: '30 10 * * 1-5'  # 4 PM IST on weekdays (triggered via cron)
 
 permissions:
-  contents: write
-  pages: write  # Allow GitHub Pages deployment
-  id-token: read  # Allow for deployment using GitHub Pages action
+  contents: write  # Allow GitHub Pages deployment (this is still required for writing contents)
 
 jobs:
   update-dashboard:
@@ -35,14 +33,3 @@ jobs:
           git add index.html
           git commit -m "Auto update dashboard" || echo "No changes"
           git push
-
-      - name: Deploy to GitHub Pages
-        uses: actions/configure-pages@v2  # Configures the deployment
-        with:
-          branch: main  # The branch you are pushing changes to
-          folder: .  # The folder containing your HTML file (root if it's directly in the root)
-
-      - name: Deploy site
-        uses: actions/deploy-pages@v2
-        with:
-          branch: main  # The branch that gets deployed
