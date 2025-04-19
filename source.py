@@ -1,40 +1,38 @@
-import os
-import requests
+import yfinance as yf
+from datetime import datetime, timedelta
 import pandas as pd
-from datetime import datetime
-import webbrowser
-from fyers_apiv3 import fyersModel
-from datetime import timedelta
 
-client_id = 'DP24B3W02G-100'
-secret_key = '2HYDZFCY55'
-redirect_uri = 'https://www.google.com'
-access_token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb0FMNmkxTVdQMUo4cFFYbDdzeExfLVd6enVHZEhjWHRVSUoydjAyc0JiT29lMHczazVqUV92Zlo1eTFSV1YtWV9idkpmdEtLVEVRR0N3SFhJLUZQWEd1UUpqLU02ZmowWkdMbHVZc2lTZTFGQ3FKQT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiI2ZTA3ZDM5MDIyNWMwMjU3NDA2ZDc2YzMzODVhNzJjMjc2OGVmODQ1OWVmNGRkZDlhYTk1Y2ZkYyIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWVMzNDM4NyIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ0OTM2MjAwLCJpYXQiOjE3NDQ4NzkyNjYsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NDg3OTI2Niwic3ViIjoiYWNjZXNzX3Rva2VuIn0.D_ZvH07cmhyZKJ0e5XkvyWsKT3mB63GtSZzUYG0talQ'
-
-fyers = fyersModel.FyersModel(token=access_token, is_async=False, client_id=client_id, log_path="")
-
-start_date = None
-pnl_file = "holdings_pnl_tracker.csv"
 holdings_df = pd.read_csv("holdings.csv", dayfirst=True)
 holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True)
 
-holdings_dict = holdings_df.groupby('Symbol').apply(
-    lambda x: x[['Date', 'Entry', 'Quantity']].apply(lambda row: {
+holdings_dict = {}
+
+for _, row in holdings_df.iterrows():
+    symbol = row['Symbol']
+    
+    if symbol not in holdings_dict:
+        holdings_dict[symbol] = []
+
+    entry = {
         'Date': row['Date'].strftime('%Y-%m-%d'),
         'Entry': row['Entry'],
         'Quantity': row['Quantity']
-    }, axis=1).to_list()
-).to_dict()
+    }
+    
+    if entry not in holdings_dict[symbol]:
+        holdings_dict[symbol].append(entry)
 
-if os.path.exists(pnl_file):
-    pnl_df = pd.read_csv(pnl_file)
-    pnl_df['Date'] = pd.to_datetime(pnl_df['Date'], format='%Y-%m-%d')
-    pnl_df.sort_values(by='Date', inplace=True)
-    last_date = pnl_df['Date'].max()
-    start_date = last_date + timedelta(days=1)
-else:
-    start_date = min([purchase["Date"] for purchases in holdings_dict.values() for purchase in purchases])
-#print(holdings_dict)
+# Display the resulting holdings_dict
+'''for symbol, entries in holdings_dict.items():
+    print(f"Symbol: {symbol}")
+    
+    for entry in entries:
+        print(f"  Date: {entry['Date']}, Entry: {entry['Entry']}, Quantity: {entry['Quantity']}")
+    print("\n")'''
+
+start_date = min([datetime.strptime(purchase["Date"], "%Y-%m-%d")
+                      for purchases in holdings_dict.values()
+                      for purchase in purchases])
 
 end_date = datetime.today()
 
@@ -44,30 +42,27 @@ for symbol, purchases in holdings_dict.items():
     total_quantity = sum(purchase['Quantity'] for purchase in purchases)
     total_cost = sum(purchase['Entry'] * purchase['Quantity'] for purchase in purchases)
     average_entry_price = total_cost / total_quantity
-    #print(f"📥 Fetching historical data for {symbol}")
-    res = fyers.history({
-        "symbol": symbol,
-        "resolution": "D",
-        "date_format": "1",
-        "range_from": min([p["Date"] for p in purchases]),
-        "range_to": end_date.strftime("%Y-%m-%d"),
-        "cont_flag": "1"
-    })
-    #print(f"API response for {symbol}: {res}")
-    candles = res.get("candles", [])
-    if candles:
-        data = {}
-        for candle in candles:
-            date = datetime.fromtimestamp(candle[0]).strftime("%Y-%m-%d")
-            close_price = candle[4]
-            data[date] = close_price
-        historical_data[symbol] = data
+    
+    # Fetch historical data using yfinance
+    ticker = yf.Ticker(symbol)
+    df = ticker.history(start=start_date, end=end_date)
+    
+    # Check if data is available
+    if not df.empty:
+	    data = {date.strftime("%Y-%m-%d"): round(close_price, 2) for date, close_price in zip(df.index, df['Close'])}
+	    #print(data)
+	    historical_data[symbol] = data
+	    #print(historical_data[symbol])
     else:
         print(f"No historical data found for {symbol}")
 
+#Optionally print out the historical data
+'''for symbol, data in historical_data.items():
+    for date, close_price in data.items():
+        print(f"Symbol: {symbol}, Date: {date}, Close: {close_price}")'''
+
 daily_rows = []
 current_date = start_date
-
 while current_date <= end_date:
     today_str = current_date.strftime("%Y-%m-%d")
     for symbol, purchases in holdings_dict.items():
@@ -92,11 +87,11 @@ while current_date <= end_date:
                 })
     current_date += timedelta(days=1)
 
-if daily_rows:
-    df = pd.DataFrame(daily_rows)
-    df.sort_values(by=["Date", "Symbol"], inplace=True)
-    print(df)
-    df.to_csv("holdings_pnl_tracker.csv", index=False)
+
+df = pd.DataFrame(daily_rows)
+df.sort_values(by=["Date", "Symbol"], inplace=True)
+print(df)
+df.to_csv("holdings_pnl_tracker.csv", index=False)
     
     
 import plotly.express as px
@@ -394,6 +389,12 @@ html_template = f"""<!DOCTYPE html>
       width: 50% !important;
       height: 100% !important;
       }}
+    @media (max-width: 768px) {{
+      .plot,
+      #plot-container > div {{
+        width: 100% !important;
+      }}
+    }}
     /* Table header styling */
     th {{
       background-color: #ffe082;  /* Soft yellow */
@@ -427,7 +428,7 @@ html_template = f"""<!DOCTYPE html>
   <div class="header">
     <h1>📊 Portfolio Dashboard</h1>
     <div class="info">
-      <div><strong>Owner:</strong> SM Thamizha</div>
+      <div><strong>Owner:</strong> Lavs</div>
       <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
     </div>
   </div>
@@ -470,6 +471,6 @@ html_template = f"""<!DOCTYPE html>
 </body>
 </html>"""
 
-# Write the full HTML to index.html
+#Write the full HTML to index.html
 with open("index.html", "w") as f:
     f.write(html_template)
