@@ -207,7 +207,7 @@ for _, row in holdings_df.iterrows():
 
 
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
-portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL ₹</th><th>PnL %</th></tr>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL (₹)</th><th>PnL (%)</th></tr>"
 
 # Calculate total invested
 total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
@@ -397,15 +397,6 @@ html_template = f"""<!DOCTYPE html>
   <div class="table-container">
     <h3>📋 Holdings Overview</h3>
     <table>
-      <thead>
-        <tr>
-          <th>Ticker</th>
-          <th>Qty</th>
-          <th>Invested (₹)</th>
-          <th>PnL (₹)</th>
-          <th>PnL (%)</th>
-        </tr>
-      </thead>
       <tbody id="holdingsTable">
         <!-- Your generated portfolio table rows will be inserted here -->
         {portfolio_table}
