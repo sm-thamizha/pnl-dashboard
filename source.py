@@ -182,8 +182,8 @@ fig.update_layout(
     yaxis=dict(
         tickformat=".2~s"  # Use SI prefix (k, M, etc.) and round to 2 decimals
     ),
-    title="Portfolio PnL Over Time",
-    template='plotly_dark'
+    title="Portfolio PnL",
+    template='ggplot2'
 )
 
 fig.show()
@@ -210,7 +210,7 @@ for _, row in holdings_df.iterrows():
 
 
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
-portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL (₹)</th><th>PnL (%)</th></tr>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL <span>(₹)</span></th><th>PnL <span>(%)</span></th></tr>"
 
 # Calculate total invested
 total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
@@ -263,17 +263,6 @@ html_template = f"""<!DOCTYPE html>
       align-items: flex-start;
       margin-bottom: 2rem;
     }}
-    @media (max-width: 768px) {{
-    .header {{
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-    }}
-
-    .info {{
-      text-align: center;
-      margin-top: 0.5rem;
-    }}}}
 
     /* Dashboard title style */
     h1 {{
@@ -291,10 +280,6 @@ html_template = f"""<!DOCTYPE html>
       color: #6d4c41;
       line-height: 1.2;
       font-family: 'Silkscreen', sans-serif;
-    }}
-    .container {{
-      max-width: 1200px;
-      margin: 0 auto;
     }}
     /* Summary boxes container */
     .summary {{
@@ -329,7 +314,9 @@ html_template = f"""<!DOCTYPE html>
       flex: 1;
       height: 500px;
     }}
-
+    .summary-item span {{
+      font-weight: normal;  /* Remove bold from span elements */
+    }}
     /* Table container (with scroll if needed) */
     .table-container {{
       flex: 1;
@@ -367,15 +354,6 @@ html_template = f"""<!DOCTYPE html>
       color: #4e2600;
       font-weight: bold;
     }}
-
-    @media (max-width: 768px) {{
-	    .content {{
-      flex-direction: column;
-    }}
-    .plot, .table-container {{
-      width: 100%;
-    }}}}
-
     
     /* Zebra stripe effect for table rows */
     tbody tr:nth-child(even) {{
@@ -399,7 +377,6 @@ html_template = f"""<!DOCTYPE html>
 </head>
 
 <body>
-<div class="container">
   <!-- Dashboard Header Section -->
   <div class="header">
     <h1>📊 Portfolio Dashboard</h1>
@@ -412,13 +389,16 @@ html_template = f"""<!DOCTYPE html>
   <!-- Summary Boxes -->
   <div class="summary">
     <div class="summary-item">
-      💰 <strong>Total Invested:</strong> ₹{total_invested:,.2f}
+      💰 <strong>Total Invested:</strong>
+      <span>₹{total_invested:,.2f}</span>
     </div>
     <div class="summary-item">
-      📈 <strong>Current Value:</strong> ₹{current_value:,.2f}
+      📈 <strong>Current Value:</strong>
+      <span>₹{current_value:,.2f}</span>
     </div>
     <div class="summary-item">
-      📊 <strong>Portfolio PnL:</strong> ₹{total_pnl:,.2f} ({pnl_percent:.2f}%)
+      📊 <strong>Portfolio PnL:</strong>
+      <span>₹{total_pnl:,.2f}({pnl_percent:.2f}%)</span>
     </div>
   </div>
 
@@ -440,7 +420,6 @@ html_template = f"""<!DOCTYPE html>
       </tbody>
     </table>
   </div>
-</div>
 </body>
 </html>"""
 
