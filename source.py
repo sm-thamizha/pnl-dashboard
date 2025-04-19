@@ -239,7 +239,7 @@ html_template = f"""<!DOCTYPE html>
   <title>📈 Portfolio Dashboard</title>
 
   <!-- Google Fonts for custom font styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&family=EB+Garamond&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
   <!-- Plotly.js for interactive charts -->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -264,7 +264,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Dashboard title style */
     h1 {{
-      font-family: 'Lobster', cursive;
+      font-family: 'Bungee Spice', sans-serif;
       font-size: 3rem;
       color: #ff6f00;
       text-shadow: 2px 2px #00000044;
