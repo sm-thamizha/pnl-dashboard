@@ -207,7 +207,7 @@ for _, row in holdings_df.iterrows():
 
 
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
-portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>Current PnL</th><th>PnL %</th></tr>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL ₹</th><th>PnL %</th></tr>"
 
 # Calculate total invested
 total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
@@ -228,7 +228,6 @@ for ticker, data in portfolio_data.items():
     pnl_percentage = (latest_pnl / data['Total Invested']) * 100 if data['Total Invested'] != 0 else 0
     
     portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{data['Total Invested']}</td><td>{latest_pnl}</td><td>{pnl_percentage:.2f}%</td></tr>"
-    portfolio_table += "</table>"
 
 html_template = f"""<!DOCTYPE html>
 <html lang="en">
