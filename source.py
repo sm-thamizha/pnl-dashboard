@@ -1,12 +1,17 @@
 import yfinance as yf
 from datetime import datetime, timedelta
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
+
+#READING DATA FROM HOLDINGS.CSV
 holdings_df = pd.read_csv("holdings.csv", dayfirst=True)
 holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True)
 
-holdings_dict = {}
 
+#STORING THE HOLDINGS DATA INTO A DICTIONARY FOR EASY USE
+holdings_dict = {}
 for _, row in holdings_df.iterrows():
     symbol = row['Symbol']
    
@@ -22,22 +27,24 @@ for _, row in holdings_df.iterrows():
     if entry not in holdings_dict[symbol]:
         holdings_dict[symbol].append(entry)
 
-# Display the resulting holdings_dict
+
+#DISPLAY HOLDINGS_DICT FOR DEBUG
 '''for symbol, entries in holdings_dict.items():
     print(f"Symbol: {symbol}")
-   
     for entry in entries:
         print(f"  Date: {entry['Date']}, Entry: {entry['Entry']}, Quantity: {entry['Quantity']}")
     print("\n")'''
 
+#SET THE START DATE AS FIRST STOCK PURCHASE DATE AND END AS TODAY FOR PNL CALCULATION
 start_date = min([datetime.strptime(purchase["Date"], "%Y-%m-%d")
                       for purchases in holdings_dict.values()
                       for purchase in purchases])
 
 end_date = datetime.today()
 
-historical_data = {}
 
+#FETCHING HISTORICAL PRICE DATA FOR EACH HOLDING
+historical_data = {}
 for symbol, purchases in holdings_dict.items():
     total_quantity = sum(purchase['Quantity'] for purchase in purchases)
     total_cost = sum(purchase['Entry'] * purchase['Quantity'] for purchase in purchases)
@@ -56,11 +63,14 @@ for symbol, purchases in holdings_dict.items():
     else:
         print(f"No historical data found for {symbol}")
 
-#Optionally print out the historical data
+
+#DISPLAY HISTORICAL_DATA FOR DEBUG
 '''for symbol, data in historical_data.items():
     for date, close_price in data.items():
         print(f"Symbol: {symbol}, Date: {date}, Close: {close_price}")'''
 
+
+#COMPUTE DAILY PNL FOR EACH HOLDING
 daily_rows = []
 current_date = start_date
 while current_date <= end_date:
@@ -88,24 +98,24 @@ while current_date <= end_date:
     current_date += timedelta(days=1)
 
 
+#WRITE THE PNL DATA INTO A CSV
 df = pd.DataFrame(daily_rows)
 df.sort_values(by=["Date", "Symbol"], inplace=True)
 print(df)
 df.to_csv("holdings_pnl_tracker.csv", index=False)
    
-   
-import plotly.express as px
-import plotly.graph_objects as go
 
-holdings_file = "holdings.csv"
+'''--------------------------------------------------PLOTLY CHART OF THE PNL SINCE BEGINNING--------------------------------------------------'''
+
+
+#READ HOLDING PNL DATA AND CALCULATE SUM FOR DAILY PNL
 pnl_file = "holdings_pnl_tracker.csv"
-
-holdings_df = pd.read_csv(holdings_file)
 df = pd.read_csv(pnl_file)
 df['Date'] = pd.to_datetime(df['Date'], errors='coerce').dt.date
-
 df_total = df.groupby('Date')['PnL'].sum().reset_index()
 
+
+#X-AXIS TICK MONTHS INSTEAD OF DAYS TO UNCLUTTER
 df_total['Month'] = pd.to_datetime(df_total['Date']).dt.to_period('M').dt.to_timestamp()
 first_trading_days = df_total.groupby('Month').first().reset_index()
 tick_dates = first_trading_days['Date'].tolist()
@@ -121,6 +131,8 @@ fig.update_xaxes(
     tickformat="%b %Y"
 )
 
+
+#SWITCHING COLOR ON CROSSING ZERO PNL
 for i in range(1, len(df_total)):
     x0 = pd.to_datetime(df_total['Date'][i-1])
     x1 = pd.to_datetime(df_total['Date'][i])
@@ -163,6 +175,8 @@ for i in range(1, len(df_total)):
             hoverinfo='skip'
         )
 
+
+#ADD HOVER INFO FOR EACH TICK
 fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
@@ -171,6 +185,8 @@ fig.add_scatter(
     showlegend=False
 )
 
+
+#CHART STYLING
 fig.update_layout(
     xaxis_title=None,
     yaxis_title=None,
@@ -188,16 +204,25 @@ fig.update_layout(
     )
 )
 
-fig.show()
+
+#DISPLAY CHART FOR DEBUG
+'''fig.show()'''
+
+
+#CONVERT THE PLOT INTO HTML
 html_graph = fig.to_html(include_plotlyjs='cdn', full_html=False)
 
-# This part needs to be corrected to aggregate correctly based on Ticker and update the invested and quantity.
+
+'''--------------------------------------------------TABLE OF THE HOLDINGS--------------------------------------------------'''
+
+
+#CALCULATE TOTAL QTY AND INVESTED FOR EACH HOLDING AND THEN OVERALL
 portfolio_data = {}
 
 for _, row in holdings_df.iterrows():
     ticker = row['Symbol']
     quantity = row['Quantity']
-    price = row['Entry']  # Assuming you have the 'Price' column in holdings.csv
+    price = row['Entry']
 
     # Aggregate total quantity and total invested for each ticker
     if ticker not in portfolio_data:
@@ -207,35 +232,38 @@ for _, row in holdings_df.iterrows():
         }
 
     portfolio_data[ticker]['Total Qty'] += quantity
-    # Aggregate total quantity and total invested for each ticker
-    portfolio_data[ticker]['Total Invested'] += round(quantity * price, 2)  # Round to 2 decimal places
+    portfolio_data[ticker]['Total Invested'] += round(quantity * price, 2)
+	
+total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
 
 
+#INITIALIZE HTML TABLE
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
 portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Avg. Price</th><th>Invested</th><th>PnL</th></tr>"
 
-# Calculate total invested
-total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
 
+#CALCULATE CURRENT VALUE OF EACH HOLDING, TOTAL PNL & PERCENT
 current_value = 0
 for ticker, data in portfolio_data.items():
     latest_price = df[df['Symbol'] == ticker]['Close Price'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
     current_value += latest_price * data['Total Qty']
 
 total_pnl = current_value - total_invested
-pnl_percent = (total_pnl / total_invested) * 100 if total_invested != 0 else 0
+pnl_percent = (total_pnl / total_invested) * 100
+
+
+#COLOR CLASS FOR OVERALL PNL
 if total_pnl > 0:
     pnl_class = "text-green"
 else:
     pnl_class = "text-red"
 
-# Iterate through portfolio dictionary and extract the current PnL from the pnl file
+#CREATING TABLE ROWS TO DISPLAY
 for ticker, data in portfolio_data.items():
-    # Extract latest PnL for the ticker
     latest_pnl = df[df['Symbol'] == ticker]['PnL'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
-    # Calculate PnL percentage for the stock
     pnl_percentage = (latest_pnl / data['Total Invested']) * 100 if data['Total Invested'] != 0 else 0
     avg_price = data['Total Invested'] / data['Total Qty']
+	#COLOR CLASS FOR INDIVIDUAL HOLDING PNL
     if latest_pnl > 0:
         ticker_pnl_class = "text-green"
     else:
@@ -250,12 +278,14 @@ html_template = f"""<!DOCTYPE html>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>📈 Portfolio Dashboard</title>
 
-  <!-- Google Fonts for custom font styles -->
-  <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 
-  <!-- Plotly.js for interactive charts -->
+  <!--GOOGLE FONTS FOR CUSTOM FONT STYLES-->
+  <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  
+
+  <!--PLOTLY.JS FOR INTERACTIVE CHARTS-->
   <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
 
   <!-- CSS Styling -->
   <style>
@@ -269,22 +299,22 @@ html_template = f"""<!DOCTYPE html>
 
     /* Header section layout */
     .header {{
-      display: flex;
-      justify-content: space-between;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      position: relative;
-    }}
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  width: 100%;
+	}}
 
     /* Dashboard title style */
-    h1 {{
-      font-family: 'Bungee Spice', sans-serif;
-      font-size: 3rem;
-      color: #ff6f00;
-      text-shadow: 2px 2px #00000044;
-      margin: 0;
-    }}
+	h1 {{
+	  font-family: 'Bungee Spice', sans-serif;
+	  font-size: 3rem;
+	  color: #ff6f00;
+	  text-shadow: 2px 2px #00000044;
+	  margin: 0;
+	  flex: 1;
+	  text-align: center;
+	}}
 
     /* Owner and date info */
     .info {{
@@ -295,11 +325,11 @@ html_template = f"""<!DOCTYPE html>
       font-family: 'Silkscreen', sans-serif;
       margin-left: auto;
     }}
+	
     /* Summary boxes container */
     .summary {{
       display: flex;
       justify-content: space-between;
-      flex-wrap: wrap;
       gap: 1rem;
       margin-bottom: 2rem;
     }}
@@ -309,23 +339,20 @@ html_template = f"""<!DOCTYPE html>
       font-size: 1.25rem;
       padding: 1rem;
       flex: 1;
-      background-color: #fff3cd;  /* Light yellow-orange background */
-      border: 2px solid #ffcf40;  /* Yellow border */
+      background-color: #fff3cd;
+      border: 2px solid #ffcf40;
       border-radius: 10px;
-      min-width: 0px;
       text-align: center;
       color: #5d4037;
-      white-space: normal;  /* Allow text to wrap */
-      overflow-wrap: break-word; /* Ensures long words break properly */
+      white-space: normal;
+      overflow-wrap: break-word;
       display: flex;
-      flex-direction: column; /* Stacks content vertically inside the box */
       justify-content: center;
     }}
 
     /* Main content layout: Chart + Table side-by-side */
     .content {{
       display: flex;
-      flex-direction: row;
       justify: space-between;
       gap: 1rem;
     }}
@@ -333,21 +360,22 @@ html_template = f"""<!DOCTYPE html>
     /* Chart container */
     .plot {{
       flex: 1;
-      width: 45%;
       height: 500px;
-      box-sizing: border-box;
-}}
+	  width: 48%;
+	}}
 
-    .summary-item span {{
-      font-weight: normal;  /* Remove bold from span elements */
-    }}
-    /* Table container (with scroll if needed) */
+    /* Table container */
     .table-container {{
       flex: 1;
       overflow-x: auto;
       box-sizing: border-box;
-      width: 55%;
+	  width: 48%;
     }}
+	
+    .summary-item span {{
+      font-weight: normal;  /* Remove bold from span elements */
+    }}
+
     .summary-item .label {{
       display: flex;
       align-items: center;
@@ -363,10 +391,21 @@ html_template = f"""<!DOCTYPE html>
       margin-top: 0.25rem;
     }}
 
-
+	@media (max-width: 768px) {{
+	.summary {{
+	  flex-direction: column;
+	}}
+	.content {{
+      flex-direction: column;
+	}}
+	.plot, .table-container {{
+      width: 100%;
+	}}
+	}}
+	
     /* Table styling */
     table {{
-      width: 90%;
+      width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
       font-size: 0.95rem;
@@ -379,31 +418,13 @@ html_template = f"""<!DOCTYPE html>
       border: 1px solid #bcaaa4;
       white-space: nowrap;
     }}
-    @media (max-width: 768px) {{
-    .summary {{
-      flex-direction: column;  /* Stack summary boxes on mobile */
-    }}
-    .content {{
-      flex-direction: column;  /* Stack chart and table */
-    }}
-    .plot, .table-container {{
-      width: 90%;
-    }}}}
-    #plot-container > div {{
-      width: 45% !important;
-      height: 100% !important;
-      }}
-    @media (max-width: 768px) {{
-      .plot,
-      #plot-container > div {{
-        width: 100% !important;
-      }}
-    }}
+
     /* Table header styling */
     th {{
-      background-color: #ffe082;  /* Soft yellow */
+      background-color: #ffe082;
       color: #4e2600;
       font-weight: bold;
+	  padding: 0.75rem;
     }}
    
     /* Zebra stripe effect for table rows */
@@ -413,7 +434,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Hover effect for rows */
     tbody tr:hover {{
-      background-color: #fce4ec;
+      background-color: #f1f8e9;
     }}
 
     /* Text color helpers for PnL positive/negative */
