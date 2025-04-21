@@ -9,7 +9,7 @@ holdings_dict = {}
 
 for _, row in holdings_df.iterrows():
     symbol = row['Symbol']
-    
+   
     if symbol not in holdings_dict:
         holdings_dict[symbol] = []
 
@@ -18,14 +18,14 @@ for _, row in holdings_df.iterrows():
         'Entry': row['Entry'],
         'Quantity': row['Quantity']
     }
-    
+   
     if entry not in holdings_dict[symbol]:
         holdings_dict[symbol].append(entry)
 
 # Display the resulting holdings_dict
 '''for symbol, entries in holdings_dict.items():
     print(f"Symbol: {symbol}")
-    
+   
     for entry in entries:
         print(f"  Date: {entry['Date']}, Entry: {entry['Entry']}, Quantity: {entry['Quantity']}")
     print("\n")'''
@@ -42,17 +42,17 @@ for symbol, purchases in holdings_dict.items():
     total_quantity = sum(purchase['Quantity'] for purchase in purchases)
     total_cost = sum(purchase['Entry'] * purchase['Quantity'] for purchase in purchases)
     average_entry_price = total_cost / total_quantity
-    
+   
     # Fetch historical data using yfinance
     ticker = yf.Ticker(symbol)
     df = ticker.history(start=start_date, end=end_date)
-    
+   
     # Check if data is available
     if not df.empty:
-	    data = {date.strftime("%Y-%m-%d"): round(close_price, 2) for date, close_price in zip(df.index, df['Close'])}
-	    #print(data)
-	    historical_data[symbol] = data
-	    #print(historical_data[symbol])
+   data = {date.strftime("%Y-%m-%d"): round(close_price, 2) for date, close_price in zip(df.index, df['Close'])}
+   #print(data)
+   historical_data[symbol] = data
+   #print(historical_data[symbol])
     else:
         print(f"No historical data found for {symbol}")
 
@@ -92,8 +92,8 @@ df = pd.DataFrame(daily_rows)
 df.sort_values(by=["Date", "Symbol"], inplace=True)
 print(df)
 df.to_csv("holdings_pnl_tracker.csv", index=False)
-    
-    
+   
+   
 import plotly.express as px
 import plotly.graph_objects as go
 
@@ -212,7 +212,7 @@ for _, row in holdings_df.iterrows():
 
 
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
-portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Invested</th><th>PnL <span>(₹)</span></th><th>PnL <span>(%)</span></th></tr>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Avg. Price</th><th>Invested</th><th>PnL</th></tr>"
 
 # Calculate total invested
 total_invested = sum([data['Total Invested'] for data in portfolio_data.values()])
@@ -224,6 +224,10 @@ for ticker, data in portfolio_data.items():
 
 total_pnl = current_value - total_invested
 pnl_percent = (total_pnl / total_invested) * 100 if total_invested != 0 else 0
+if total_pnl > 0:
+    pnl_class = "text-green"
+else:
+    pnl_class = "text-red"
 
 # Iterate through portfolio dictionary and extract the current PnL from the pnl file
 for ticker, data in portfolio_data.items():
@@ -231,13 +235,13 @@ for ticker, data in portfolio_data.items():
     latest_pnl = df[df['Symbol'] == ticker]['PnL'].iloc[-1] if not df[df['Symbol'] == ticker].empty else 0
     # Calculate PnL percentage for the stock
     pnl_percentage = (latest_pnl / data['Total Invested']) * 100 if data['Total Invested'] != 0 else 0
-    
-    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{data['Total Invested']}</td><td>{latest_pnl}</td><td>{pnl_percentage:.2f}%</td></tr>"
+    avg_price = data['Total Invested'] / data['Total Qty']
+    if latest_pnl > 0:
+        ticker_pnl_class = "text-green"
+    else:
+        ticker_pnl_class = "text-red"
+    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{avg_price}</td><td>{data['Total Invested']}</td><td class='{ticker_pnl_class}'>{latest_pnl} ({pnl_percentage:.2f}%)</td></tr>"
 
-if total_pnl > 0:
-    pnl_class = "text-green"
-else:
-    pnl_class = "text-red"
 
 html_template = f"""<!DOCTYPE html>
 <html lang="en">
@@ -267,7 +271,7 @@ html_template = f"""<!DOCTYPE html>
     .header {{
       display: flex;
       justify-content: space-between;
-      flex-direction: column; 
+      flex-direction: column;
       align-items: center;
       width: 100%;
       position: relative;
@@ -401,7 +405,7 @@ html_template = f"""<!DOCTYPE html>
       color: #4e2600;
       font-weight: bold;
     }}
-    
+   
     /* Zebra stripe effect for table rows */
     tbody tr:nth-child(even) {{
       background-color: #fffde7;
@@ -457,9 +461,9 @@ html_template = f"""<!DOCTYPE html>
   <div class="content">
 
     <!-- Portfolio PnL Line Chart -->
-	<div class="plot" id="plot-container">
-		{html_graph}
-	</div>
+<div class="plot" id="plot-container">
+{html_graph}
+</div>
   <div class="table-container">
     <table>
      <tbody id="holdingsTable">
