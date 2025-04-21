@@ -329,6 +329,7 @@ html_template = f"""<!DOCTYPE html>
       color: #6d4c41;
       font-family: 'Silkscreen', sans-serif;
       padding: 0 0.5rem;
+      margin-bottom: 1rem;
     }}
 	
     /* Summary boxes container */
