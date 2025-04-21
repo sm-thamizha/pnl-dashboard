@@ -318,9 +318,7 @@ html_template = f"""<!DOCTYPE html>
       font-size: 3rem;
       color: #ff6f00;
       text-shadow: 2px 2px #00000044;
-      margin: 0;
-      flex: 1;
-      text-align: center;
+      margin: 0 auto 0.5rem auto;
     }}
 
     /* Owner and date info */
@@ -330,7 +328,7 @@ html_template = f"""<!DOCTYPE html>
       font-size: 1rem;
       color: #6d4c41;
       font-family: 'Silkscreen', sans-serif;
-      margin-top: 0.25rem;
+      padding: 0 0.5rem;
     }}
 	
     /* Summary boxes container */
@@ -456,9 +454,10 @@ html_template = f"""<!DOCTYPE html>
 <body>
   <!-- Dashboard Header Section -->
   <div class="header">
-    <div class="info"><strong>Owner:</strong> SM Thamizha</div>
     <h1>📊 Portfolio Dashboard</h1>
-    <div class="info"><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
+    <div class="info">
+    <div><strong>Owner:</strong> SM Thamizha</div>
+    <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
   </div>
 
 
