@@ -6,13 +6,13 @@ import plotly.graph_objects as go
 
 
 #READING DATA FROM HOLDINGS.CSV
-holdings_df = pd.read_csv("holdings.csv", dayfirst=True)
-holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True)
+holdings_df = pd.read_csv("holdings.csv", dayfirst=True) #Reads csv with DD-MM-YYYY format and stores into pandas dataframe
+holdings_df['Date'] = pd.to_datetime(holdings_df['Date'], dayfirst=True) #Converts the DD-MM-YYYY into datetime format and updates itself
 
 
 #STORING THE HOLDINGS DATA INTO A DICTIONARY FOR EASY USE
 holdings_dict = {}
-for _, row in holdings_df.iterrows():
+for i, row in holdings_df.iterrows():
     symbol = row['Symbol']
    
     if symbol not in holdings_dict:
