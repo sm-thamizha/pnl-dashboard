@@ -333,7 +333,7 @@ html_template = f"""<!DOCTYPE html>
     /* Chart container */
     .plot {{
       flex: 1;
-      width: 50%;
+      width: 45%;
       height: 500px;
       box-sizing: border-box;
 }}
@@ -346,7 +346,7 @@ html_template = f"""<!DOCTYPE html>
       flex: 1;
       overflow-x: auto;
       box-sizing: border-box;
-      width: 50%;
+      width: 55%;
     }}
     .summary-item .label {{
       display: flex;
@@ -366,7 +366,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Table styling */
     table {{
-      width: 100%;
+      width: 90%;
       border-collapse: collapse;
       margin-top: 1rem;
       font-size: 0.95rem;
@@ -387,10 +387,10 @@ html_template = f"""<!DOCTYPE html>
       flex-direction: column;  /* Stack chart and table */
     }}
     .plot, .table-container {{
-      width: 100%;
+      width: 90%;
     }}}}
     #plot-container > div {{
-      width: 50% !important;
+      width: 45% !important;
       height: 100% !important;
       }}
     @media (max-width: 768px) {{
