@@ -177,10 +177,16 @@ for i in range(1, len(df_total)):
 
 
 #ADD HOVER INFO FOR EACH TICK
+df_total['FormattedPnL'] = df_total['PnL'].apply(
+    lambda x: f"{x:,.2f}" if abs(x) < 1000 else
+              f"{x/1000:.2f}k" if abs(x) < 100000 else
+              f"{x/100000:.2f}L"
+)
 fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
     mode='none',
+    customdata=df_total['FormattedPnL'],
     hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y}<extra></extra>",
     showlegend=False
 )
@@ -191,8 +197,9 @@ fig.update_layout(
     xaxis_title=None,
     yaxis_title=None,
     yaxis=dict(
-        tickformat=".2~s"  # Use SI prefix (k, M, etc.) and round to 2 decimals
-    ),
+	tickformat=".2~s",
+    	tick0=0,
+    	dtick=5000),
     title="Portfolio PnL",
     template='ggplot2',
     plot_bgcolor='rgba(0, 0, 0, 0)',
