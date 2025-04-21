@@ -307,9 +307,7 @@ html_template = f"""<!DOCTYPE html>
 
     /* Header section layout */
     .header {{
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-align: center;
       width: 100%;
       margin-bottom: 1rem;
     }}
@@ -327,10 +325,12 @@ html_template = f"""<!DOCTYPE html>
 
     /* Owner and date info */
     .info {{
-          font-size: 1rem;
-          color: #6d4c41;
- 	  line-height: 1.2;
-  	  font-family: 'Silkscreen', sans-serif;
+      display: flex;
+      justify-content: space-between;
+      font-size: 1rem;
+      color: #6d4c41;
+      font-family: 'Silkscreen', sans-serif;
+      margin-top: 0.25rem;
     }}
 	
     /* Summary boxes container */
