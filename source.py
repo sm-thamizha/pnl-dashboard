@@ -177,11 +177,6 @@ for i in range(1, len(df_total)):
 
 
 #ADD HOVER INFO FOR EACH TICK
-df_total['FormattedPnL'] = df_total['PnL'].apply(
-    lambda x: f"{x:,.2f}" if abs(x) < 1000 else
-              f"{x/1000:.2f}k" if abs(x) < 10000 else
-              f"{x/100000:.2f}L"
-)
 fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
