@@ -181,7 +181,7 @@ fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
     mode='none',
-    hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y}<extra></extra>",
+    hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y:.2f}<extra></extra>",
     showlegend=False
 )
 tick_vals = list(range(int(df_total['PnL'].min()) // 5000 * 5000,
@@ -198,7 +198,6 @@ fig.update_layout(
     xaxis_title=None,
     yaxis_title=None,
     yaxis=dict(
-	tickformat=".2~s",
     	tick0=0,
     	dtick=5000),
     title="Portfolio PnL",
