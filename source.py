@@ -240,7 +240,7 @@ for ticker, data in portfolio_data.items():
         ticker_pnl_class = "text-green"
     else:
         ticker_pnl_class = "text-red"
-    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{avg_price}</td><td>{data['Total Invested']}</td><td class='{ticker_pnl_class}'>{latest_pnl} ({pnl_percentage:.2f}%)</td></tr>"
+    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{avg_price:.2f}</td><td>{data['Total Invested']}</td><td class='{ticker_pnl_class}'>{latest_pnl} ({pnl_percentage:.2f}%)</td></tr>"
 
 
 html_template = f"""<!DOCTYPE html>
