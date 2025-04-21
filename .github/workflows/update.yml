@@ -5,7 +5,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: '30 10 * * 1-5'  # 4 PM IST on weekdays (triggered via cron)
+    - cron: '30 11 * * 1-5'  # 4 PM IST on weekdays (triggered via cron)
   workflow_dispatch:
   
 permissions:
