@@ -192,12 +192,7 @@ fig.add_scatter(
 )
 tick_vals = list(range(int(df_total['PnL'].min()) // 5000 * 5000,
                        int(df_total['PnL'].max()) + 5000, 5000))
-tick_text = [
-    f"{v:,.2f}" if abs(v) < 1000 else
-    f"{v/1000:.2f}k" if abs(v) < 100000 else
-    f"{v/100000:.2f}L"
-    for v in tick_vals
-]
+tick_text = [f"{v:,.0f}" for v in tick_vals]
 fig.update_yaxes(
     tickvals=tick_vals,
     ticktext=tick_text
@@ -213,6 +208,7 @@ fig.update_layout(
     	tick0=0,
     	dtick=5000),
     title="Portfolio PnL",
+    height=800,
     template='ggplot2',
     plot_bgcolor='rgba(0, 0, 0, 0)',
     paper_bgcolor='rgba(0, 0, 0, 0)',
