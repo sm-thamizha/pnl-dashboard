@@ -324,6 +324,7 @@ html_template = f"""<!DOCTYPE html>
     /* Owner and date info */
     .info {{
       display: flex;
+      text-align: right;
       justify-content: space-between;
       font-size: 1rem;
       color: #6d4c41;
