@@ -182,7 +182,6 @@ df_total['FormattedPnL'] = df_total['PnL'].apply(
               f"{x/1000:.2f}k" if abs(x) < 10000 else
               f"{x/100000:.2f}L"
 )
-)
 fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
