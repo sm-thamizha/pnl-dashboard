@@ -307,31 +307,30 @@ html_template = f"""<!DOCTYPE html>
 
     /* Header section layout */
     .header {{
-	  display: flex;
-	  justify-content: space-between;
-	  align-items: center;
-	  width: 100%;
-	}}
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      margin-bottom: 1rem;
+    }}
 
     /* Dashboard title style */
-	h1 {{
-	  font-family: 'Bungee Spice', sans-serif;
-	  font-size: 3rem;
-	  color: #ff6f00;
-	  text-shadow: 2px 2px #00000044;
-	  margin: 0;
-	  flex: 1;
-	  text-align: center;
-	}}
+    h1 {{
+      font-family: 'Bungee Spice', sans-serif;
+      font-size: 3rem;
+      color: #ff6f00;
+      text-shadow: 2px 2px #00000044;
+      margin: 0;
+      flex: 1;
+      text-align: center;
+    }}
 
     /* Owner and date info */
     .info {{
-      text-align: right;
-      font-size: 1rem;
-      color: #6d4c41;
-      line-height: 1.2;
-      font-family: 'Silkscreen', sans-serif;
-      margin-left: auto;
+          font-size: 1rem;
+          color: #6d4c41;
+ 	  line-height: 1.2;
+  	  font-family: 'Silkscreen', sans-serif;
     }}
 	
     /* Summary boxes container */
@@ -369,7 +368,7 @@ html_template = f"""<!DOCTYPE html>
     /* Chart container */
     .plot {{
       flex: 0 1 auto;
-      height: 800px;
+      height: auto;
 	}}
 
     /* Table container */
@@ -457,12 +456,11 @@ html_template = f"""<!DOCTYPE html>
 <body>
   <!-- Dashboard Header Section -->
   <div class="header">
+    <div class="info"><strong>Owner:</strong> SM Thamizha</div>
     <h1>📊 Portfolio Dashboard</h1>
-    <div class="info">
-      <div><strong>Owner:</strong> SM Thamizha</div>
-      <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
-    </div>
+    <div class="info"><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
   </div>
+
 
   <!-- Summary Boxes -->
   <div class="summary">
