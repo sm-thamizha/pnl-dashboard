@@ -181,7 +181,6 @@ fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
     mode='none',
-    customdata=df_total['FormattedPnL'],
     hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y}<extra></extra>",
     showlegend=False
 )
