@@ -359,17 +359,15 @@ html_template = f"""<!DOCTYPE html>
 
     /* Chart container */
     .plot {{
-      flex: 1;
+      flex: 0 1 auto;
       height: 500px;
-	  width: 48%;
 	}}
 
     /* Table container */
     .table-container {{
-      flex: 1;
+      flex: 1 1 auto;
       overflow-x: auto;
       box-sizing: border-box;
-	  width: 48%;
     }}
 	
     .summary-item span {{
