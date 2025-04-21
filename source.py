@@ -239,7 +239,7 @@ total_invested = sum([data['Total Invested'] for data in portfolio_data.values()
 
 #INITIALIZE HTML TABLE
 portfolio_table = "<table border='1' style='width:100%; margin-top: 30px; text-align: center; border-collapse: collapse;'>"
-portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Avg. Price</th><th>Invested</th><th>PnL</th></tr>"
+portfolio_table += "<tr><th>Ticker</th><th>Quantity</th><th>Avg. Price</th><th>PnL</th></tr>"
 
 
 #CALCULATE CURRENT VALUE OF EACH HOLDING, TOTAL PNL & PERCENT
@@ -268,7 +268,7 @@ for ticker, data in portfolio_data.items():
         ticker_pnl_class = "text-green"
     else:
         ticker_pnl_class = "text-red"
-    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{avg_price:.2f}</td><td>{data['Total Invested']}</td><td class='{ticker_pnl_class}'>{latest_pnl} ({pnl_percentage:.2f}%)</td></tr>"
+    portfolio_table += f"<tr><td>{ticker}</td><td>{data['Total Qty']}</td><td>{avg_price:.2f}</td></td><td class='{ticker_pnl_class}'>{latest_pnl} ({pnl_percentage:.2f}%)</td></tr>"
 
 
 html_template = f"""<!DOCTYPE html>
