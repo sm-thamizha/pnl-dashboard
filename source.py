@@ -49,10 +49,10 @@ for symbol, purchases in holdings_dict.items():
    
     # Check if data is available
     if not df.empty:
-   data = {date.strftime("%Y-%m-%d"): round(close_price, 2) for date, close_price in zip(df.index, df['Close'])}
-   #print(data)
-   historical_data[symbol] = data
-   #print(historical_data[symbol])
+        data = {date.strftime("%Y-%m-%d"): round(close_price, 2) for date, close_price in zip(df.index, df['Close'])}
+        #print(data)
+        historical_data[symbol] = data
+        #print(historical_data[symbol])
     else:
         print(f"No historical data found for {symbol}")
 
