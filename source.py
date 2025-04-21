@@ -181,7 +181,7 @@ fig.add_scatter(
     x=df_total['Date'],
     y=df_total['PnL'],
     mode='none',
-    hovertemplate="Date: %{x|%d-%m-%Y}<br>Total PnL: %{y:.2f}<extra></extra>",
+    hovertemplate="Total PnL: %{y:.2f}<br>Date: %{x|%d-%m-%Y}<extra></extra>",
     showlegend=False
 )
 tick_vals = list(range(int(df_total['PnL'].min()) // 5000 * 5000,
