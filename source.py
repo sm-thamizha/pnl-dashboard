@@ -323,13 +323,10 @@ html_template = f"""<!DOCTYPE html>
 
     /* Owner and date info */
     .info {{
-      display: flex;
       text-align: right;
-      justify-content: space-between;
       font-size: 1rem;
       color: #6d4c41;
       font-family: 'Silkscreen', sans-serif;
-      padding: 0 0.5rem;
       margin-bottom: 1rem;
     }}
 	
