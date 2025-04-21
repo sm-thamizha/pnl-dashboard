@@ -347,6 +347,7 @@ html_template = f"""<!DOCTYPE html>
       white-space: normal;
       overflow-wrap: break-word;
       display: flex;
+      flex-direction: column;
       justify-content: center;
     }}
 
@@ -369,17 +370,16 @@ html_template = f"""<!DOCTYPE html>
       overflow-x: auto;
       box-sizing: border-box;
     }}
-	
-    .summary-item span {{
-      font-weight: normal;  /* Remove bold from span elements */
-    }}
 
     .summary-item .label {{
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 0.5rem;}}
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      display: block;
+    }}
+
+    .summary-item .value {{
+      font-weight: normal;
+    }}
 
     .table-container h3 {{
       margin-bottom: 0;
@@ -459,20 +459,16 @@ html_template = f"""<!DOCTYPE html>
   <!-- Summary Boxes -->
   <div class="summary">
     <div class="summary-item">
-    <div class="label">
-      💰<strong>Total Invested:</strong></div>
-      <span>₹{total_invested:,.2f}</span>
+    <div class="label">💰<strong>Total Invested:</strong></div>
+    <div class="value">₹{total_invested:,.2f}</div>
     </div>
     <div class="summary-item">
-      <div class="label">
-      📈<strong>Current Value:</strong> </div>
-      <span>₹{current_value:,.2f}</span>
+    <div class="label">📈<strong>Current Value:</strong></div>
+    <div class="value">₹{current_value:,.2f}</div>
     </div>
     <div class="summary-item">
-    <div class="label">
-      📊<strong>Portfolio PnL:</strong>
-      </div>
-      <span class="{pnl_class}">₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</span>
+    <div class="label">📊<strong>Portfolio PnL:</strong></div>
+    <div class="value {pnl_class}">₹{total_pnl:,.2f} ({pnl_percent:.2f}%)</div>
     </div>
   </div>
 
