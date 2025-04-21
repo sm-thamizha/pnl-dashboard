@@ -208,7 +208,7 @@ fig.update_layout(
     	tick0=0,
     	dtick=5000),
     title="Portfolio PnL",
-    height=625,
+    height=600,
     template='ggplot2',
     plot_bgcolor='rgba(0, 0, 0, 0)',
     paper_bgcolor='rgba(0, 0, 0, 0)',
