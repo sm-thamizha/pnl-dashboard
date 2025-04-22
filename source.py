@@ -117,14 +117,23 @@ df_total = df.groupby('Date')['PnL'].sum().reset_index()
 
 #X-AXIS TICK MONTHS INSTEAD OF DAYS TO UNCLUTTER
 df_total['Month'] = pd.to_datetime(df_total['Date']).dt.to_period('M').dt.to_timestamp()
-first_trading_days = df_total.groupby('Month').first().reset_index()
-tick_dates = first_trading_days['Date'].tolist()
+
+month_counts = df_total.groupby('Month')['PnL'].count()
+valid_months = month_counts[month_counts >= 5].index
+
+tick_dates = (
+    df_total[df_total['Month'].isin(valid_months)]
+    .groupby('Month')['Date']
+    .min()
+    .tolist()
+)
 
 df_total['Line Color'] = df_total['PnL'].apply(lambda x: 'green' if x >= 0 else 'red')
 df_total['Marker Color'] = df_total['PnL'].apply(lambda x: 'green' if x >= 0 else 'red')
 
 fig = go.Figure()
-
+df_total.sort_values(by='Date', inplace=True)
+df_total.reset_index(drop=True, inplace=True)
 fig.update_xaxes(
     tickmode='array',
     tickvals=tick_dates,
