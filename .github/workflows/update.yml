@@ -28,7 +28,6 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run update script
-      - name: Run multiple Python scripts in order
         run: |
           python holdings_data.py
           python plot_table.py
