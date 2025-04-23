@@ -28,7 +28,12 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run update script
-        run: python source.py  # This updates the index.html
+      - name: Run multiple Python scripts in order
+        run: |
+          python holdings_data.py
+          python plot_table.py
+          python html_generator.py
+          python main.py
 
       - name: Commit and push changes
         run: |
