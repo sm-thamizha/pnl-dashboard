@@ -1,3 +1,4 @@
+import pandas as pd
 from datetime import datetime, timedelta
 from holdings_data import load_holdings, process_holdings, fetch_historical_data, calculate_pnl
 from plot_table import generate_pnl_chart, generate_portfolio_table
