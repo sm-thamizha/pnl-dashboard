@@ -1,283 +1,187 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# Updated HTML generation function to match the dark Databox UI style
-def generate_html(total_invested, current_value, total_pnl, pnl_percent, pnl_class, html_graph, portfolio_table):
-    # Determine appropriate class for positive/negative values
-    pnl_direction = "up" if total_pnl >= 0 else "down"
-    triangle_class = "triangle-up" if total_pnl >= 0 else "triangle-down"
-    
-    # Calculate "Day's PnL" based on the last row of data (use total_pnl as fallback)
-    # This would need to be calculated in your main.py and passed as a parameter
-    days_pnl = total_pnl / 30  # Example calculation - replace with actual daily PnL calculation
-    
+def generate_html(total_invested, current_value, total_pnl, pnl_percent, pnl_class, html_graph, portfolio_table, daily_pnl=0, daily_pnl_percent=0):
+    # Determine classes for PnL styling
+    total_pnl_badge_class = "pnl-up arrow-up" if pnl_percent > 0 else "pnl-down arrow-down"
+    daily_pnl_badge_class = "pnl-up arrow-up" if daily_pnl >= 0 else "pnl-down arrow-down"
+
     html_template = f"""
     <!DOCTYPE html>
     <html lang="en">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Portfolio Dashboard</title>
+      <title>📈 Portfolio Dashboard</title>
       <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
       <style>
-        * {{
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }}
-        
         body {{
-          background-color: #1a1f35;
+          background-color: #1c1c1c;
           color: #ffffff;
-          padding: 20px;
+          font-family: 'Silkscreen', sans-serif;
+          padding: 1rem 2rem 2rem 2rem;
         }}
-        
-        .dashboard {{
+        h1 {{
+          font-family: 'Bungee Spice', sans-serif;
+          font-size: 3rem;
+          color: #ffffff;
+          text-shadow: 2px 2px #00000088;
+          margin: 0;
+        }}
+        .header {{
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1rem;
+        }}
+        .info {{
+          text-align: right;
+        }}
+        .main-content {{
+          display: flex;
+          gap: 1.5rem;
+          margin-bottom: 1.5rem;
+        }}
+        .plot-container {{
+          width: 70%;
+        }}
+        .summary-grid-container {{
+          width: 30%;
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-gap: 20px;
-          max-width: 1400px;
-          margin: 0 auto;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows: 1fr 1fr;
+          gap: 1rem;
         }}
-        
-        .card {{
-          background-color: #232942;
-          border-radius: 8px;
-          padding: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .summary-item {{
+          font-size: 1.1rem;
+          padding: 0.75rem;
+          background-color: #2a2a2a;
+          border: 2px solid #3d3d3d;
+          border-radius: 10px;
+          color: #ffffff;
+          text-align: center;
           display: flex;
           flex-direction: column;
+          justify-content: center;
         }}
-        
-        .card-header {{
-          font-size: 14px;
-          color: #bdc3c7;
-          margin-bottom: 15px;
-          font-weight: 500;
+        .summary-item .value {{
+          font-size: 1.5rem;  /* Increased font size for values */
+          margin-top: 0.5rem;
         }}
-        
-        .chart-card {{
-          grid-column: span 3;
-          position: relative;
-          padding-bottom: 40px;
-        }}
-        
-        .value-primary {{
-          font-size: 48px;
-          font-weight: 700;
-          margin-bottom: 5px;
-        }}
-        
-        .value-secondary {{
-          font-size: 28px;
-          font-weight: 600;
-          margin-bottom: 5px;
-        }}
-        
-        .comparison {{
+        .summary-item .pnl-wrapper {{
           display: flex;
+          flex-direction: column;  /* Changed to column layout */
           align-items: center;
-          font-size: 14px;
-          color: #bdc3c7;
+          justify-content: center;
+          gap: 0.5rem;
         }}
-        
-        .chart-container {{
-          position: relative;
+        .large-summary-item {{
+          grid-column: span 2;
+        }}
+        .table-container {{
           width: 100%;
-          height: 300px;
-          margin-top: 20px;
         }}
-        
-        .up {{
-          color: #4cd964;
+        .text-green {{
+          color: #4caf50;
         }}
-        
-        .down {{
-          color: #ff3b30;
+        .text-red {{
+          color: #f44336;
         }}
-        
-        .triangle-up {{
-          width: 0;
-          height: 0;
-          border-left: 6px solid transparent;
-          border-right: 6px solid transparent;
-          border-bottom: 8px solid #4cd964;
+        .section-title {{
+          margin: 0.5rem 0;
+          font-size: 1.2rem;
+          color: #aaaaaa;
+        }}
+
+        /* PnL badge styling - matched to table styling */
+        .pnl-badge {{
           display: inline-block;
-          margin-right: 6px;
+          padding: 2px 6px;
+          border-radius: 3px;
+          font-size: 12px;
+          min-width: 40px;
+          text-align: center;
+          margin-top: 5px;  /* Added margin top */
         }}
-        
-        .triangle-down {{
-          width: 0;
-          height: 0;
-          border-left: 6px solid transparent;
-          border-right: 6px solid transparent;
-          border-top: 8px solid #ff3b30;
-          display: inline-block;
-          margin-right: 6px;
+        .pnl-up {{
+          background-color: #2f6a3122;  /* Dimmer green background */
+          color: #009900;  /* Brighter green text */
         }}
-        
-        .table-card {{
-          grid-column: span 3;
-          overflow-x: auto;
+        .pnl-down {{
+          background-color: #cc000022;  /* Dimmer red background */
+          color: #ff0000;  /* Brighter red text */
         }}
-        
-        table {{
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 14px;
+        .arrow-up:before {{
+          content: "▲";
+          font-size: 9px;
+          margin-right: 2px;
         }}
-        
-        th {{
-          text-align: left;
-          padding: 12px 15px;
-          border-bottom: 1px solid #3a4055;
-          color: #bdc3c7;
-          font-weight: 500;
+        .arrow-down:before {{
+          content: "▼";
+          font-size: 9px;
+          margin-right: 2px;
         }}
-        
-        td {{
-          padding: 12px 15px;
-          border-bottom: 1px solid #3a4055;
-        }}
-        
-        /* Chart Legend */
-        .chart-legend {{
-          display: flex;
-          gap: 20px;
-          position: absolute;
-          bottom: 10px;
-          left: 20px;
-        }}
-        
-        .legend-item {{
-          display: flex;
-          align-items: center;
-          font-size: 14px;
-        }}
-        
-        .legend-color {{
-          width: 15px;
-          height: 15px;
-          margin-right: 8px;
-          border-radius: 2px;
-        }}
-        
-        .legend-color.blue {{
-          background-color: #00c6ff;
-        }}
-        
-        .legend-color.gray {{
-          background-color: #3a4055;
-        }}
-        
-        /* Responsive styles */
-        @media (max-width: 900px) {{
-          .dashboard {{
-            grid-template-columns: 1fr;
+
+        @media (max-width: 1100px) {{
+          .main-content {{
+            flex-direction: column;
           }}
-          
-          .chart-card, .table-card {{
-            grid-column: span 1;
+          .plot-container {{
+            width: 100%;
+            margin-bottom: 1rem;
+          }}
+          .summary-grid-container {{
+            width: 100%;
           }}
         }}
       </style>
     </head>
     <body>
-      <div class="dashboard">
-        <!-- Main chart card -->
-        <div class="card chart-card">
-          <div class="card-header">Last 30 days ({datetime.today().strftime('%b %d')} - {(datetime.today() - timedelta(days=30)).strftime('%b %d')})</div>
-          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-              <div>Amount Invested</div>
-              <div class="value-primary">₹ {total_invested:,.2f}</div>
-              <div class="comparison">
-                <span class="{triangle_class}"></span>
-                <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-                <span style="margin-left: 5px;">vs previous period</span>
-              </div>
+      <div class="header">
+        <h1>📊 Portfolio Dashboard</h1>
+        <div class="info">
+          <div><strong>Owner:</strong> SM Thamizha</div>
+          <div><strong>Last Updated:</strong> {datetime.today().strftime('%d-%m-%Y')}</div>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <!-- Chart on the left (70%) -->
+        <div class="plot-container">
+          {html_graph}
+        </div>
+
+        <!-- 2x2 Summary grid on the right (30%) -->
+        <div class="summary-grid-container">
+          <div class="summary-item">
+            <div class="label">💰<strong>Total Invested:</strong></div>
+            <div class="value">₹{total_invested:,.2f}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">📈<strong>Current Value:</strong></div>
+            <div class="value">₹{current_value:,.2f}</div>
+          </div>
+          <div class="summary-item">
+            <div class="label">📊<strong>Portfolio PnL:</strong></div>
+            <div class="value pnl-wrapper">
+              <span class="{pnl_class}">₹{total_pnl:,.2f}</span>
+              <span class="pnl-badge {total_pnl_badge_class}">{abs(pnl_percent):.1f}%</span>
             </div>
           </div>
-          
-          <!-- Chart -->
-          <div class="chart-container">
-            {html_graph}
+          <div class="summary-item">
+            <div class="label">📆<strong>Day's<br>PnL:</strong></div>
+            <div class="value pnl-wrapper">
+              <span class="{'text-green' if daily_pnl >= 0 else 'text-red'}">₹{daily_pnl:,.2f}</span>
+              <span class="pnl-badge {daily_pnl_badge_class}">{abs(daily_pnl_percent):.1f}%</span>
+            </div>
           </div>
         </div>
-        
-        <!-- Metric cards -->
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Total Invested</div>
-          <div class="value-secondary">₹ {total_invested:,.2f}</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous period</span>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Current Value</div>
-          <div class="value-secondary">₹ {current_value:,.2f}</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous period</span>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Day's PnL</div>
-          <div class="value-secondary">₹ {days_pnl:,.2f}</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous day</span>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Portfolio PnL</div>
-          <div class="value-secondary">₹ {total_pnl:,.2f}</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous period</span>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Return %</div>
-          <div class="value-secondary">{pnl_percent:.2f}%</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent/2):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous period</span>
-          </div>
-        </div>
-        
-        <div class="card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div>Annual Return</div>
-          <div class="value-secondary">{pnl_percent * 12:.2f}%</div>
-          <div class="comparison">
-            <span class="{triangle_class}"></span>
-            <span class="{pnl_direction}">{abs(pnl_percent):.2f}%</span>
-            <span style="margin-left: 5px;">vs previous period</span>
-          </div>
-        </div>
-        
-        <!-- Portfolio table -->
-        <div class="card table-card">
-          <div class="card-header">Last 30 days ({(datetime.today() - timedelta(days=30)).strftime('%b %d')} - {datetime.today().strftime('%b %d')})</div>
-          <div style="margin-bottom: 15px;">Campaign Performance Overview</div>
-          {portfolio_table}
-        </div>
+      </div>
+
+      <!-- Table at the bottom -->
+      <div class="table-container">
+        <div class="section-title">Portfolio Holdings</div>
+        {portfolio_table}
       </div>
     </body>
     </html>
