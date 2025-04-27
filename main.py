@@ -2,7 +2,8 @@ from datetime import datetime, timedelta
 from holdings_data import load_holdings, process_holdings, fetch_historical_data, calculate_pnl
 from plot_table import generate_pnl_chart, generate_portfolio_table
 from html_generator import generate_html
-import pandas as pd
+
+from datetime import datetime, timedelta
 
 # Load and process holdings data from the CSV file
 holdings_df = load_holdings("holdings.csv")
