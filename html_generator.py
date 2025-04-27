@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Updated HTML generation function to match the dark Databox UI style
 def generate_html(total_invested, current_value, total_pnl, pnl_percent, pnl_class, html_graph, portfolio_table):
