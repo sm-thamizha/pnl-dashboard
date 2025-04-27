@@ -37,7 +37,7 @@ html_graph = generate_pnl_chart(df_total, tick_dates)
 
 # Generate portfolio table
 # We need to modify the function call to match our updated function
-portfolio_table, total_invested, current_value, total_pnl, pnl_percent, pnl_class = generate_portfolio_table(df_total, holdings_df)
+portfolio_table, total_invested, current_value, total_pnl, pnl_percent, pnl_class, days_pnl_value, days_pnl_percent = generate_portfolio_table(df_total, holdings_df)
 
 # Generate HTML for the dashboard
 html = generate_html(
@@ -47,7 +47,9 @@ html = generate_html(
     pnl_percent=pnl_percent,
     pnl_class=pnl_class,
     html_graph=html_graph,
-    portfolio_table=portfolio_table
+    portfolio_table=portfolio_table,
+    daily_pnl=days_pnl_value,
+    daily_pnl_percent=days_pnl_percent
 )
 
 # Save the generated HTML to a file
