@@ -13,12 +13,12 @@ def generate_html(total_invested, current_value, total_pnl, pnl_percent, pnl_cla
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>📈 Portfolio Dashboard</title>
       <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-      <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Jacquard+12:wght@400;700&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css2?family=Bungee+Spice&family=Reenie+Beanie:wght@400;700&display=swap" rel="stylesheet">
       <style>
         body {{
           background-color: #1c1c1c;
           color: #ffffff;
-          font-family: 'Jacquard 12', system-ui;
+          font-family: 'Reenie Beanie', system-ui;
           padding: 1rem 2rem 2rem 2rem;
         }}
         h1 {{
