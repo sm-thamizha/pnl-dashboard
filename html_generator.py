@@ -18,7 +18,7 @@ def generate_html(total_invested, current_value, total_pnl, pnl_percent, pnl_cla
         body {{
           background-color: #1c1c1c;
           color: #ffffff;
-          font-family: 'Reenie Beanie', system-ui;
+          font-family: 'Reenie Beanie', sans-serif;
           padding: 1rem 2rem 2rem 2rem;
         }}
         h1 {{
