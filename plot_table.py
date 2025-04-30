@@ -2,7 +2,11 @@ import plotly.graph_objects as go
 import pandas as pd
 
 # Generate Plotly chart of PnL
-def generate_pnl_chart(df_total, tick_dates):
+import plotly.graph_objects as go
+import pandas as pd
+
+# Generate Plotly chart of PnL
+def generate_pnl_chart(df_total, tick_dates=None):
     fig = go.Figure()
     df_total.sort_values(by='Date', inplace=True)
     df_total.reset_index(drop=True, inplace=True)
@@ -73,8 +77,18 @@ def generate_pnl_chart(df_total, tick_dates):
         showlegend=False
     )
 
-    # Format x-axis with month labels and abbreviated year format
-    tick_vals = [pd.to_datetime(date) for date in tick_dates]
+    # Get first date of each month in the data
+    # If no tick_dates provided, derive them from the data
+    if tick_dates is None:
+        # Extract month-year combinations from the dataset
+        daily_pnl['month_year'] = daily_pnl['Date'].dt.strftime('%Y-%m')
+        
+        # Get the first date for each month-year combination
+        first_dates = daily_pnl.groupby('month_year')['Date'].min().reset_index()
+        tick_vals = first_dates['Date'].tolist()
+    else:
+        # Use provided tick_dates
+        tick_vals = [pd.to_datetime(date) for date in tick_dates]
 
     # Custom function to format date tick labels with abbreviated years
     def custom_date_format(date):
@@ -155,7 +169,7 @@ def generate_pnl_chart(df_total, tick_dates):
     """
 
     return styled_chart_html
-
+    
 # Generate the portfolio table
 # Generate the portfolio table
 def generate_portfolio_table(df, holdings_df):
